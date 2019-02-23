@@ -21,6 +21,7 @@ module alu_test;
     $dumpvars;
 
     err = 0;
+
     // Try 1 + 2 + 3 = 6
     A = 1;
     B = 2;
@@ -34,6 +35,17 @@ module alu_test;
     if({Y1, Y2} != 6) begin
       $display(
         "ALU TEST: Addition form 1 not working: invalid result %d (expected 6)",
+        {Y1, Y2}
+      );
+      err = 1;
+    end
+
+    // Try 1 - 2 - 3 = -4
+    op = 4;
+    #1;
+    if({Y1, Y2} != -4) begin
+      $display(
+        "ALU TEST: Subtraction form 1 not working: invalid result %d (expected -4)",
         {Y1, Y2}
       );
       err = 1;

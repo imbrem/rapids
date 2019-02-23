@@ -47,11 +47,18 @@ module ALU(op, floating, form, precision, A, B, C, D, Y1, Y2);
     .form(form), .precision(precision), .A(A), .B(B), .C(C), .D(D),
     .Y1(add_Y1), .Y2(add_Y2)
   );
+  int_subtractor is (
+    .form(form), .precision(precision), .A(A), .B(B), .C(C), .D(D),
+    .Y1(sub_Y1), .Y2(sub_Y2)
+  );
 
   always @(*) begin
     casez (op)
       3'b000: begin // ADD
         {Y1, Y2} = {add_Y1, add_Y2};
+      end
+      3'b100: begin // SUB
+        {Y1, Y2} = {sub_Y1, sub_Y2};
       end
     endcase
   end
