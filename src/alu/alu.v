@@ -41,16 +41,17 @@ module ALU(op, floating, form, precision, A, B, C, D, Y1, Y2);
   input[31:0] A, B, C, D; // Input registers
   output reg[31:0] Y1, Y2; // Output registers
 
-  wire[31:0] adder_Y1, adder_Y2;
+  wire[31:0] add_Y1, add_Y2;
+  wire[31:0] sub_Y1, sub_Y2;
   int_adder ia (
     .form(form), .precision(precision), .A(A), .B(B), .C(C), .D(D),
-    .Y1(adder_Y1), .Y2(adder_Y2)
+    .Y1(add_Y1), .Y2(add_Y2)
   );
 
   always @(*) begin
-    case (op)
+    casez (op)
       3'b000: begin // ADD
-        {Y1, Y2} = {adder_Y1, adder_Y2};
+        {Y1, Y2} = {add_Y1, add_Y2};
       end
     endcase
   end

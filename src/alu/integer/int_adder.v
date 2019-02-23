@@ -10,14 +10,14 @@ module int_adder (form, precision, A, B, C, D, Y1, Y2);
 
   for(preci = 0; preci < 3; preci = preci + 1) begin : precgen_add
     genvar biti;
-    localparam integer nobits = (1 + preci << 3);
+    localparam integer nobits = (1 << (preci + 3));
     for(biti = 0; biti < 32/nobits; biti = biti + 1) begin : bitgen_add
       localparam integer lb = (biti + 1)*nobits - 1;
       localparam integer rb = biti*nobits;
       always @(*) begin
         if(precision == preci) begin
 
-          if(form) begin
+          if(!form) begin
             Y1[lb:rb] = A[lb:rb] + C[lb:rb];
             Y2[lb:rb] = B[lb:rb] + D[lb:rb];
           end
