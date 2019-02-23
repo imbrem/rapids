@@ -41,44 +41,16 @@ module ALU(op, floating, form, precision, A, B, C, D, Y1, Y2);
   input[31:0] A, B, C, D; // Input registers
   output reg[31:0] Y1, Y2; // Output registers
 
-  reg[31:0] AY1, AY2;
-
-  genvar preci;
-  genvar biti;
-
-  for(preci = 0; preci < 3; preci = preci + 1) begin : precgen_add
-    genvar biti;
-    localparam integer nobits = (1 + preci << 3);
-    for(biti = 0; biti < 32/nobits; biti = biti + 1) begin : bitgen_add
-      localparam integer lb = (biti + 1)*nobits - 1;
-      localparam integer rb = biti*nobits;
-      always @(*) begin
-        if(precision == preci) begin
-
-          if(form) begin
-            AY1[lb:rb] = A[lb:rb] + C[lb:rb];
-            AY2[lb:rb] = B[lb:rb] + D[lb:rb];
-          end
-          else begin
-            {AY1[lb:rb], AY2[lb:rb]} = A[lb:rb] + B[lb:rb] + C[lb:rb];
-          end
-
-        end
-
-      end
-    end
-  end
-
-  always @(*) begin
-    if(precision == 2'b11) begin
-      {AY1, AY2} = {A, B} + {C, D};
-    end
-  end
+  wire[31:0] adder_Y1, adder_Y2;
+  int_adder ia (
+    .form(form), .precision(precision), .A(A), .B(B), .C(C), .D(D),
+    .Y1(adder_Y1), .Y2(adder_Y2)
+  );
 
   always @(*) begin
     case (op)
       3'b000: begin // ADD
-        {Y1, Y2} = {AY1, AY2};
+        {Y1, Y2} = {adder_Y1, adder_Y2};
       end
     endcase
   end
