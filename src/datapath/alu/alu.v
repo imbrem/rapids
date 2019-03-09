@@ -18,11 +18,11 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2);
 
   wire[31:0] add_Y1, add_Y2;
   wire[31:0] sub_Y1, sub_Y2;
-  adder add (
+  adder adder (
     .form(form), .vec(vec), .A(A), .B(B), .C(C), .D(D),
     .Y1(add_Y1), .Y2(add_Y2)
   );
-  subtractor sub (
+  subtractor subtractor (
     .form(form), .vec(vec), .A(A), .B(B), .C(C), .D(D),
     .Y1(sub_Y1), .Y2(sub_Y2)
   );
