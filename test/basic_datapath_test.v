@@ -1,6 +1,7 @@
 module basic_datapath_test;
   reg err;
 
+  reg clk;
   reg[2:0] op;
   reg form;
   reg[1:0] vec;
@@ -8,18 +9,26 @@ module basic_datapath_test;
   reg[3:0] B;
   reg[3:0] C;
   reg[3:0] D;
+  reg[3:0] Y1, Y2;
 
   datapath datapath(
+    .clk(clk),
     .op(op),
     .form(form),
     .vec(vec),
     .A(A),
     .B(B),
     .C(C),
-    .D(D)
+    .D(D),
+    .Y1(Y1),
+    .Y2(Y2)
     );
 
-  initial begin;
+  always begin
+    clk = 1'b0; #1; clk = 1'b1; #1;
+  end
+
+  initial begin
     $dumpfile("build/basic_datapath_test.vcd");
     $dumpvars;
 
@@ -32,7 +41,9 @@ module basic_datapath_test;
     B = 0;
     C = 0;
     D = 0;
-    #1;
+    Y1 = 0;
+    Y2 = 0;
+    #10;
 
     if (!err) begin
       $display("BASIC DATAPATH TEST: All good!"); end

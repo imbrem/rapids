@@ -14,7 +14,7 @@ module alu_test;
     .Y1(Y1), .Y2(Y2)
   );
 
-  initial begin;
+  initial begin
     $dumpfile("build/alu_test.vcd");
     $dumpvars;
 
