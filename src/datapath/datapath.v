@@ -2,10 +2,10 @@ module datapath(
   input[2:0] op,
   input form,
   input[1:0] vec,
-  input[4:0] A,
-  input[4:0] B,
-  input[4:0] C,
-  input[4:0] D
+  input[3:0] A,
+  input[3:0] B,
+  input[3:0] C,
+  input[3:0] D
   );
 
   wire[31:0] Y1, Y2;

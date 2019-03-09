@@ -4,10 +4,10 @@ module basic_datapath_test;
   reg[2:0] op;
   reg form;
   reg[1:0] vec;
-  reg[4:0] A;
-  reg[4:0] B;
-  reg[4:0] C;
-  reg[4:0] D;
+  reg[3:0] A;
+  reg[3:0] B;
+  reg[3:0] C;
+  reg[3:0] D;
 
   datapath datapath(
     .op(op),
