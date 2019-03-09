@@ -13,12 +13,31 @@ module datapath(
   );
 
   wire[31:0] v_Y1, v_Y2;
-  wire[31:0] v_A = registers[A];
-  wire[31:0] v_B = registers[B];
-  wire[31:0] v_C = registers[C];
-  wire[31:0] v_D = registers[D];
+  reg[31:0] v_A;
+  reg[31:0] v_B;
+  reg[31:0] v_C;
+  reg[31:0] v_D;
 
   reg[31:0] registers[15:0];
+
+  always @(*) begin
+    if(zero_reg[0]) begin
+      v_A = 0; end
+    else begin
+      v_A = registers[A]; end
+    if(zero_reg[1]) begin
+      v_A = 0; end
+    else begin
+      v_A = registers[B]; end
+    if(zero_reg[2]) begin
+      v_A = 0; end
+    else begin
+      v_A = registers[C]; end
+    if(zero_reg[3]) begin
+      v_A = 0; end
+    else begin
+      v_A = registers[D]; end
+  end
 
   ALU alu(
     .op(op), .form(form), .vec(vec),
