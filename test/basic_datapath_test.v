@@ -4,11 +4,19 @@ module basic_datapath_test;
   reg[2:0] op;
   reg form;
   reg[1:0] vec;
+  reg[4:0] A;
+  reg[4:0] B;
+  reg[4:0] C;
+  reg[4:0] D;
 
   datapath datapath(
     .op(op),
     .form(form),
-    .vec(vec)
+    .vec(vec),
+    .A(A),
+    .B(B),
+    .C(C),
+    .D(D)
     );
 
   initial begin;
@@ -20,6 +28,10 @@ module basic_datapath_test;
     op = 0;
     form = 0;
     vec = 0;
+    A = 0;
+    B = 0;
+    C = 0;
+    D = 0;
     #1;
 
     if (!err) begin
