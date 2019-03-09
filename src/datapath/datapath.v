@@ -31,17 +31,17 @@ module datapath(
     else begin
       v_A = registers[A]; end
     if(zero_reg[1]) begin
-      v_A = 0; end
+      v_B = 0; end
     else begin
-      v_A = registers[B]; end
+      v_B = registers[B]; end
     if(zero_reg[2]) begin
-      v_A = 0; end
+      v_C = 0; end
     else begin
-      v_A = registers[C]; end
+      v_C = registers[C]; end
     if(zero_reg[3]) begin
-      v_A = 0; end
+      v_D = 0; end
     else begin
-      v_A = registers[D]; end
+      v_D = registers[D]; end
   end
 
   ALU alu(

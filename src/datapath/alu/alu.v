@@ -28,7 +28,7 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2);
   );
 
   always @(*) begin
-    casez (op)
+    case (op)
       3'b000: begin // ADD
         {Y1, Y2} = {add_Y1, add_Y2};
       end

@@ -12,6 +12,8 @@ module basic_datapath_test;
   reg[3:0] Y1, Y2;
   reg[3:0] zero_reg;
   reg[1:0] write;
+  reg const_a;
+  reg[31:0] constant;
 
   datapath datapath(
     .clk(clk),
@@ -25,7 +27,9 @@ module basic_datapath_test;
     .zero_reg(zero_reg),
     .Y1(Y1),
     .Y2(Y2),
-    .write(write)
+    .write(write),
+    .const_a(const_a),
+    .constant(constant)
     );
 
   always begin
@@ -45,11 +49,21 @@ module basic_datapath_test;
     B = 0;
     C = 0;
     D = 0;
-    zero_reg = 0;
-    Y1 = 0;
+    zero_reg = 4'b1110;
+    Y1 = 1;
     Y2 = 0;
-    write = 0;
-    #10;
+    write = 1;
+    const_a = 1;
+    constant = 5;
+    #2;
+
+    if(datapath.registers[1] !== 5) begin
+      $display(
+        "BASIC DATAPATH TEST: Wrong register 1 value %d, expected 5",
+        datapath.registers[1]
+        );
+      err = 1;
+    end
 
     if (!err) begin
       $display("BASIC DATAPATH TEST: All good!"); end
