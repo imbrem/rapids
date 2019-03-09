@@ -65,6 +65,30 @@ module basic_datapath_test;
       err = 1;
     end
 
+    zero_reg = 4'b1110;
+    Y1 = 2;
+    Y2 = 0;
+    write = 1;
+    const_a = 1;
+    constant = 7;
+    #2;
+
+    if(datapath.registers[1] !== 5) begin
+      $display(
+        "BASIC DATAPATH TEST: Wrong register 1 value %d, expected 5",
+        datapath.registers[1]
+        );
+      err = 1;
+    end
+
+    if(datapath.registers[2] !== 7) begin
+      $display(
+        "BASIC DATAPATH TEST: Wrong register 2 value %d, expected 7",
+        datapath.registers[2]
+        );
+      err = 1;
+    end
+
     if (!err) begin
       $display("BASIC DATAPATH TEST: All good!"); end
     else begin
