@@ -9,10 +9,10 @@ module datapath(
   );
 
   wire[31:0] Y1, Y2;
-  wire[31:0] v_A = 0;
-  wire[31:0] v_B = 0;
-  wire[31:0] v_C = 0;
-  wire[31:0] v_D = 0;
+  wire[31:0] v_A = registers[A];
+  wire[31:0] v_B = registers[B];
+  wire[31:0] v_C = registers[C];
+  wire[31:0] v_D = registers[D];
 
   reg[31:0] registers[15:0];
 
