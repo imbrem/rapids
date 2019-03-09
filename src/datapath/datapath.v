@@ -24,4 +24,12 @@ module datapath(
     .op(op), .form(form), .vec(vec),
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2));
 
+  always @(posedge clk) begin
+    if(write[0]) begin
+      registers[Y1] <= v_Y1;
+    end
+    if(write[1]) begin
+      registers[Y2] <= v_Y2;
+    end
+  end
 endmodule

@@ -11,7 +11,7 @@ module basic_datapath_test;
   reg[3:0] D;
   reg[3:0] Y1, Y2;
   reg[3:0] zero_reg;
-  reg[1:0] write
+  reg[1:0] write;
 
   datapath datapath(
     .clk(clk),
