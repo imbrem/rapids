@@ -9,10 +9,13 @@ module datapath(
   input[3:0] D,
   input[3:0] Y1, Y2,
   input[3:0] zero_reg,
-  input[1:0] write
+  input[1:0] write,
+  input const_a,
+  input[31:0] constant
   );
 
   wire[31:0] v_Y1, v_Y2;
+  wire[31:0] constant;
   reg[31:0] v_A;
   reg[31:0] v_B;
   reg[31:0] v_C;
@@ -23,6 +26,8 @@ module datapath(
   always @(*) begin
     if(zero_reg[0]) begin
       v_A = 0; end
+    else if(const_a) begin
+      v_A = constant; end
     else begin
       v_A = registers[A]; end
     if(zero_reg[1]) begin
