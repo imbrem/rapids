@@ -89,9 +89,9 @@ module basic_datapath_test;
       err = 1;
     end
 
-    zero_reg = 4'b1100;
+    zero_reg = 4'b1010;
     A = 1;
-    B = 2;
+    C = 2;
     Y1 = 3;
     Y2 = 0;
     write = 0;
@@ -118,8 +118,6 @@ module basic_datapath_test;
         );
       err = 1;
     end
-
-    
 
     if (!err) begin
       $display("BASIC DATAPATH TEST: All good!"); end
