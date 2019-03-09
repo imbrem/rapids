@@ -1,4 +1,4 @@
-module int_subtractor (form, vec, A, B, C, D, Y1, Y2);
+module subtractor (form, vec, A, B, C, D, Y1, Y2);
 
   input form;
   input[1:0] vec;

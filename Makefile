@@ -1,6 +1,6 @@
-INTEGER_ALU_FILES = src/datapath/alu/integer/int_adder.v \
-	src/datapath/alu/integer/int_subtractor.v
-ALU_FILES = src/datapath/alu/alu.v $(INTEGER_ALU_FILES)
+ALU_FILES = src/datapath/alu/alu.v \
+	src/datapath/alu/adder.v \
+	src/datapath/alu/subtractor.v
 
 all: build/meta_test build/alu_test
 
