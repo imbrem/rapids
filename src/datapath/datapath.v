@@ -8,7 +8,7 @@ module datapath(
   input[3:0] C,
   input[3:0] D,
   input[3:0] Y1, Y2,
-  input[3:0] zero_PC,
+  input[3:0] zero_reg,
   input[1:0] write
   );
 
