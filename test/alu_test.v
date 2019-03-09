@@ -2,16 +2,14 @@ module alu_test;
   reg err;
 
   reg[2:0] op;
-  reg floating;
   reg form;
-  reg[1:0] precision;
+  reg[1:0] vec;
   reg[31:0] A, B, C, D;
   wire[31:0] Y1, Y2;
   ALU alu (
     .op(op),
-    .floating(floating),
     .form(form),
-    .precision(precision),
+    .vec(vec),
     .A(A), .B(B), .C(C), .D(D),
     .Y1(Y1), .Y2(Y2)
   );
@@ -28,8 +26,7 @@ module alu_test;
     C = 3;
     D = 2;
     form = 1;
-    floating = 0;
-    precision = 2;
+    vec = 2;
     op = 0;
     #1;
     if({Y1, Y2} != 6) begin
