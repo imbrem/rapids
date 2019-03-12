@@ -11,8 +11,9 @@ module datapath(
   input[3:0] zero_reg,
   input[1:0] write,
   input const_a,
+  input program_counter_inc,
   input[31:0] constant
-  );
+);
 
   wire[31:0] v_Y1, v_Y2;
   wire[31:0] constant;

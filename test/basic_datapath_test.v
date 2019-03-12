@@ -14,6 +14,7 @@ module basic_datapath_test;
   reg[1:0] write;
   reg const_a;
   reg[31:0] constant;
+  reg program_counter_inc;
 
   datapath datapath(
     .clk(clk),
@@ -29,6 +30,7 @@ module basic_datapath_test;
     .Y2(Y2),
     .write(write),
     .const_a(const_a),
+    .program_counter_inc(program_counter_inc),
     .constant(constant)
     );
 
@@ -176,6 +178,29 @@ module basic_datapath_test;
       $display(
         "BASIC DATAPATH TEST: Wrong register 3 value %d, expected 0",
         datapath.registers[3]
+        );
+      err = 1;
+    end
+
+    write = 0;
+    program_counter_inc = 0;
+    #2;
+
+    if(datapath.registers[3] !== 0) begin
+      $display(
+        "BASIC DATAPATH TEST: Wrong register 3 value %d, expected 0",
+        datapath.registers[3]
+        );
+      err = 1;
+    end
+
+    program_counter_inc = 1;
+    #2
+
+    if(datapath.registers[2] !== 7) begin
+      $display(
+        "BASIC DATAPATH TEST: Wrong register 2 value %d, expected 7",
+        datapath.registers[2]
         );
       err = 1;
     end
