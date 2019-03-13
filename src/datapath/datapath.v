@@ -12,7 +12,9 @@ module datapath(
   input[1:0] write,
   input const_a,
   input program_counter_inc,
-  input[31:0] constant
+  input[31:0] constant,
+  input copy_neg,
+  input[3:0] copy_select
 );
 
   wire[31:0] v_Y1, v_Y2;

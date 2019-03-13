@@ -15,6 +15,8 @@ module basic_datapath_test;
   reg const_a;
   reg[31:0] constant;
   reg program_counter_inc;
+  reg copy_neg;
+  reg[3:0] copy_select;
 
   datapath datapath(
     .clk(clk),
@@ -31,7 +33,9 @@ module basic_datapath_test;
     .write(write),
     .const_a(const_a),
     .program_counter_inc(program_counter_inc),
-    .constant(constant)
+    .constant(constant),
+    .copy_neg(copy_neg),
+    .copy_select(copy_select)
     );
 
   always begin

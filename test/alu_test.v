@@ -6,12 +6,16 @@ module alu_test;
   reg[1:0] vec;
   reg[31:0] A, B, C, D;
   wire[31:0] Y1, Y2;
+  reg copy_neg;
+  reg[3:0] copy_select;
+
   ALU alu (
     .op(op),
     .form(form),
     .vec(vec),
     .A(A), .B(B), .C(C), .D(D),
-    .Y1(Y1), .Y2(Y2)
+    .Y1(Y1), .Y2(Y2),
+    .copy_neg(copy_neg), .copy_select(copy_select)
   );
 
   initial begin
@@ -28,6 +32,8 @@ module alu_test;
     form = 1;
     vec = 2;
     op = 0;
+    copy_neg = 0;
+    copy_select = 4'b0;
     #1;
     if({Y1, Y2} != 6) begin
       $display(
@@ -69,7 +75,7 @@ module alu_test;
       );
       err =1;
     end
-    
+
     // Try 1 - 2 - 3 = -4
     vec = 2;
     form = 1;
