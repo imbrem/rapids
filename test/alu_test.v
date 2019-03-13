@@ -37,12 +37,58 @@ module alu_test;
       err = 1;
     end
 
+    // Try 1 + 3, 2 + 2
+    form = 0;
+    #1;
+    if(Y1 != 4 | Y2 != 4) begin
+      $display(
+        "ALU TEST: Addition form 0 not working: invalid reslult %d (expected 4 and 4)",
+        {Y1, Y2}
+      );
+      err = 1;
+    end
+
+    //Try {1,2} + {3,2}
+    vec = 3;
+    #1;
+    if({Y1, Y2} != {32'h4, 32'h4}) begin
+      $display(
+        "ALU TEST: Vector addition form 3 not working: invalid result %d (expected {4, 4})",
+        {Y1, Y2}
+      );
+      err = 1;
+    end
+
+    //Try Y1 = {A[31:16] + C[31:16], A[15:0] = C[15:0]}
+    vec = 1;
+    #1
+    if({Y1, Y2} != {32'h4, 32'h4}) begin
+      $display(
+        "ALU TEST: Vector addition form 1 not working: invalid result %d (expected {4, 4})",
+        {Y1, Y2}
+      );
+      err =1;
+    end
+    
     // Try 1 - 2 - 3 = -4
+    vec = 2;
+    form = 1;
     op = 4;
     #1;
     if({Y1, Y2} != -4) begin
       $display(
         "ALU TEST: Subtraction form 1 not working: invalid result %d (expected -4)",
+        {Y1, Y2}
+      );
+      err = 1;
+    end
+
+    //Try 1-3, 2-2
+    form = 0;
+    #1;
+    if(Y1 != -2 | Y2 != 0) begin
+      $display(
+        "ALU TEST: Subtraction form 0 not work: invalid result %d (expected -2 and 0)",
         {Y1, Y2}
       );
       err = 1;
