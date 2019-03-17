@@ -1,6 +1,7 @@
 ALU_FILES = src/datapath/alu/alu.v \
 	src/datapath/alu/adder.v \
-	src/datapath/alu/subtractor.v
+	src/datapath/alu/subtractor.v \
+	src/datapath/alu/copier.v
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
 
 all: build/meta_test build/alu_test build/basic_datapath_test

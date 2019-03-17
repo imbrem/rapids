@@ -94,8 +94,21 @@ module alu_test;
     #1;
     if(Y1 != -2 | Y2 != 0) begin
       $display(
-        "ALU TEST: Subtraction form 0 not work: invalid result %d (expected -2 and 0)",
+        "ALU TEST: Subtraction form 0 not working: invalid result %d (expected -2 and 0)",
         {Y1, Y2}
+      );
+      err = 1;
+    end
+
+    //Try copy 1 with lower 8 bits negated.
+    op = 3'b010;
+    copy_neg = 1;
+    copy_select = 4'b0001;
+    #1;
+    if(Y1 != 254) begin
+      $display(
+        "ALU TEST: Copy with lower 8 bits negated not working, invalid result %d, expected 32'd14.",
+        {Y1}
       );
       err = 1;
     end

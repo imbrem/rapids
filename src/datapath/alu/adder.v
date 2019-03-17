@@ -6,8 +6,6 @@ module adder (form, vec, A, B, C, D, Y1, Y2);
   output reg[31:0] Y1, Y2;
 
   genvar preci;
-  genvar biti;
-
   for(preci = 0; preci < 3; preci = preci + 1) begin : precgen_add
     genvar biti;
     localparam integer nobits = (1 << (preci + 3));

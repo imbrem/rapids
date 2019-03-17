@@ -13,5 +13,4 @@ module controlpath(
     output[3:0] alu_d_select,
   );
 
-
-  reg[:] current_state, next_state;
+endmodule

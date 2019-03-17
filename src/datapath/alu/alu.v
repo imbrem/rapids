@@ -20,6 +20,7 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2, copy_neg, copy_select);
 
   wire[31:0] add_Y1, add_Y2;
   wire[31:0] sub_Y1, sub_Y2;
+  wire[31:0] copy_Y1, copy_Y2;
   adder adder (
     .form(form), .vec(vec), .A(A), .B(B), .C(C), .D(D),
     .Y1(add_Y1), .Y2(add_Y2)
@@ -28,6 +29,10 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2, copy_neg, copy_select);
     .form(form), .vec(vec), .A(A), .B(B), .C(C), .D(D),
     .Y1(sub_Y1), .Y2(sub_Y2)
   );
+  copier copier (
+    .copy_neg(copy_neg), .copy_select(copy_select), .A(A), .B(B), .C(C), .D(D),
+    .Y1(copy_Y1), .Y2(copy_Y2)
+    );
 
   always @(*) begin
     case (op)
@@ -36,6 +41,9 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2, copy_neg, copy_select);
       end
       3'b100: begin // SUB
         {Y1, Y2} = {sub_Y1, sub_Y2};
+      end
+      3'b010: begin
+        {Y1, Y2} = {copy_Y1, copy_Y2};
       end
     endcase
   end

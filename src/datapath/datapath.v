@@ -49,7 +49,8 @@ module datapath(
 
   ALU alu(
     .op(op), .form(form), .vec(vec),
-    .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2));
+    .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
+    .copy_neg(copy_neg), .copy_select(copy_select));
 
   always @(posedge clk) begin
     if(write[0]) begin
