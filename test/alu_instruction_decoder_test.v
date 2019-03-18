@@ -84,6 +84,14 @@ module alu_instruction_decoder_test;
         err = 1;
     end
 
+    //Try invalid instruction of 3 form constant operation
+    instruction = 32'h1180100;
+    #1;
+    if(invalid_instruction != 1)begin
+      $display("ALUINSTRUCTION DECODER TEST: invalid instruction signal test failed, expected 0 got %d", invalid_instruction);
+      err = 1;
+    end
+
 
     if (!err) begin
       $display("ALU INSTRUCTION DECODER TEST: All good!"); end
