@@ -2,7 +2,7 @@ module basic_controlpath_test;
   reg err;
 
   reg clk;
-  reg[32:0] instruction;
+  reg[31:0] instruction;
   wire program_counter_inc;
   wire[2:0] alu_op;
   wire alu_form;

@@ -26,6 +26,11 @@ module alu_instruction_decoder (
     alu_write = 2'b00;
     constant = 0;
     zero_reg = 4'b0000;
+    //Make sure to not write to register 0
+    if(alu_Y1_select != 4'b0)
+      alu_write[0] = 1;
+    if(alu_Y2_select != 4'b0)
+      alu_write[1] = 1;
 
     if(alu_op == 3'b000 | alu_op == 3'b100) begin //case addition and subtraction
       if(!alu_form & const_c) begin
@@ -34,24 +39,17 @@ module alu_instruction_decoder (
         constant = {14'b0, instruction[21:16], instruction[11:0]};
       end
       else if(!alu_form & !const_c) begin
-        if(alu_Y1_select != 4'b0)
-          alu_write[0] = 1;
-        if(alu_Y2_select != 4'b0)
-          alu_write[1] = 1;
+
       end
       else if(alu_form & !const_c) begin
-        if(alu_Y1_select != 4'b0)
-          alu_write[0] = 1;
-        if(alu_Y2_select != 4'b0)
-          alu_write[1] = 1;
+
       end
       else begin
         invalid_instruction = 1;
       end
-    end//end case arithemetics
+    end//end case addition and subtraction
 
     else if(alu_op == 3'b010) begin //case copy
-      alu_write = 2'b11;
       copy_neg = instruction[24];
       copy_select = instruction[23:20];
     end //case copy
