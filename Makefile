@@ -6,9 +6,16 @@ DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
 CONTROLPATH_FILES = src/controlpath/alu_instruction_decoder.v \
 	src/controlpath/controlpath.v
 
-all: build/meta_test build/alu_test build/basic_datapath_test build/alu_instruction_decoder_test
+all: build/meta_test build/alu_test \
+	build/basic_datapath_test \
+	build/alu_instruction_decoder_test \
+	build/basic_controlpath_test
 
-test: build/meta_test.vcd build/alu_test.vcd build/basic_datapath_test.vcd build/alu_instruction_decoder_test.vcd
+test: build/meta_test.vcd \
+	build/alu_test.vcd \
+	build/basic_datapath_test.vcd \
+	build/alu_instruction_decoder_test.vcd \
+	build/basic_controlpath_test.vcd
 
 build/meta_test.vcd: build/meta_test
 	vvp build/meta_test
@@ -21,6 +28,9 @@ build/basic_datapath_test.vcd: build/basic_datapath_test
 
 build/alu_instruction_decoder_test.vcd: build/alu_instruction_decoder_test
 	vvp build/alu_instruction_decoder_test
+
+build/basic_controlpath_test.vcd: build/basic_controlpath_test
+	vvp build/basic_controlpath_test
 
 build/meta_test: test/meta_test.v
 	mkdir -p build
@@ -39,6 +49,11 @@ build/alu_instruction_decoder_test: test/alu_instruction_decoder_test.v $(CONTRO
 	mkdir -p build
 	iverilog -o build/alu_instruction_decoder_test \
 		test/alu_instruction_decoder_test.v $(CONTROLPATH_FILES)
+
+build/basic_controlpath_test: test/basic_controlpath_test.v $(CONTROLPATH_FILES)
+	mkdir -p build
+	iverilog -o build/basic_controlpath_test \
+		test/basic_controlpath_test.v $(CONTROLPATH_FILES)
 
 clean:
 	rm -f build/*
