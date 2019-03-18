@@ -12,7 +12,7 @@ module basic_datapath_test;
   reg[3:0] Y1, Y2;
   reg[3:0] zero_reg;
   reg[1:0] write;
-  reg const_a;
+  reg const_c;
   reg[31:0] constant;
   reg program_counter_inc;
   reg copy_neg;
@@ -31,7 +31,7 @@ module basic_datapath_test;
     .Y1(Y1),
     .Y2(Y2),
     .write(write),
-    .const_a(const_a),
+    .const_c(const_c),
     .program_counter_inc(program_counter_inc),
     .constant(constant),
     .copy_neg(copy_neg),
@@ -55,11 +55,11 @@ module basic_datapath_test;
     B = 0;
     C = 0;
     D = 0;
-    zero_reg = 4'b1110;
+    zero_reg = 4'b1011;
     Y1 = 1;
     Y2 = 0;
     write = 1;
-    const_a = 1;
+    const_c = 1;
     constant = 5;
     #2;
 
@@ -71,11 +71,10 @@ module basic_datapath_test;
       err = 1;
     end
 
-    zero_reg = 4'b1110;
     Y1 = 2;
     Y2 = 0;
     write = 1;
-    const_a = 1;
+    const_c = 1;
     constant = 7;
     #2;
 
@@ -101,11 +100,11 @@ module basic_datapath_test;
     Y1 = 3;
     Y2 = 0;
     write = 0;
-    const_a = 1;
+    const_c = 1;
     constant = 9;
     #5;
 
-    const_a = 0;
+    const_c = 0;
     constant = 11;
     #5;
 

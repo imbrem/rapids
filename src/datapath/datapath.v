@@ -10,7 +10,7 @@ module datapath(
   input[3:0] Y1, Y2,
   input[3:0] zero_reg,
   input[1:0] write,
-  input const_a,
+  input const_c,
   input program_counter_inc,
   input[31:0] constant,
   input copy_neg,
@@ -29,8 +29,6 @@ module datapath(
   always @(*) begin
     if(zero_reg[0]) begin
       v_A = 0; end
-    else if(const_a) begin
-      v_A = constant; end
     else begin
       v_A = registers[A]; end
     if(zero_reg[1]) begin
@@ -39,6 +37,8 @@ module datapath(
       v_B = registers[B]; end
     if(zero_reg[2]) begin
       v_C = 0; end
+    else if(const_c) begin
+      v_C = constant; end
     else begin
       v_C = registers[C]; end
     if(zero_reg[3]) begin
