@@ -16,6 +16,8 @@ module alu_instruction_decoder_test;
   wire[3:0] alu_d_select;
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
+  wire copy_neg;
+  wire[3:0] copy_select;
 
   alu_instruction_decoder d(
     .instruction(instruction),
@@ -32,7 +34,9 @@ module alu_instruction_decoder_test;
     .alu_d_select(alu_d_select),
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
-    .alu_write(alu_write)
+    .alu_write(alu_write),
+    .copy_neg(copy_neg),
+    .copy_select(copy_select)
     );
 
   initial begin
@@ -92,6 +96,23 @@ module alu_instruction_decoder_test;
       err = 1;
     end
 
+    //Try copy instruction with config being negate lower two bits
+    instruction = 32'h05301234;
+    #1;
+    if(
+      alu_op != 3'b010 |
+      copy_neg != 1 |
+      copy_select != 4'b0011 |
+      alu_a_select != 4'h1 |
+      alu_b_select != 4'h2 |
+      alu_c_select != 4'h3 |
+      alu_d_select != 4'h4 |
+      alu_Y1_select != 4'h1 |
+      alu_Y2_select != 4'h3
+      )begin
+        $display("ALU INSTRUCTION DECODER TEST: copy opeartion failed, got ");
+        err = 1;
+    end
 
     if (!err) begin
       $display("ALU INSTRUCTION DECODER TEST: All good!"); end

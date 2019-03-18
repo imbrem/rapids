@@ -14,17 +14,15 @@ module alu_instruction_decoder (
   output reg[3:0] alu_Y1_select,
   output reg[3:0] alu_Y2_select,
   output reg[1:0] alu_write,
-  output copy_neg,
-  output[3:0] copy_select
+  output reg copy_neg,
+  output reg[3:0] copy_select
   );
 
   always @(*) begin
+  //Addition and subtraction
     {const_c, alu_op, alu_form, alu_vec_perci} = instruction[28:22];
     {alu_a_select, alu_b_select, alu_c_select, alu_d_select} = instruction[15:0];
     {alu_Y1_select, alu_Y2_select} = {alu_a_select, alu_c_select};
-  end
-
-  always @(*) begin
     alu_write = 2'b00;
     constant = 0;
     zero_reg = 4'b0000;
@@ -48,5 +46,9 @@ module alu_instruction_decoder (
     else begin
       invalid_instruction = 1;
     end
+
+    //copier
+    copy_neg = instruction[24];
+    copy_select = instruction[23:20];
   end
 endmodule

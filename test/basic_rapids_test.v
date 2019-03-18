@@ -1,6 +1,9 @@
 module basic_rapids_test;
   reg err;
 
+  reg clk;
+  reg[31:0] instruction;
+
   initial begin
     $dumpfile("build/basic_rapids_test.vcd");
     $dumpvars;
