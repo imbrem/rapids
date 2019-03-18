@@ -105,9 +105,9 @@ module alu_test;
     copy_neg = 1;
     copy_select = 4'b0001;
     #1;
-    if(Y1 != 254) begin
+    if(Y1 != 32'd252) begin
       $display(
-        "ALU TEST: Copy with lower 8 bits negated not working, invalid result %d, expected 32'd14.",
+        "ALU TEST: Copy with lower 8 bits negated not working, invalid result %d, expected 32'd252.",
         {Y1}
       );
       err = 1;

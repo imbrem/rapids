@@ -13,7 +13,9 @@ module alu_instruction_decoder (
   output reg[3:0] alu_d_select,
   output reg[3:0] alu_Y1_select,
   output reg[3:0] alu_Y2_select,
-  output reg[1:0] alu_write
+  output reg[1:0] alu_write,
+  output copy_neg,
+  output[3:0] copy_select
   );
 
   always @(*) begin
