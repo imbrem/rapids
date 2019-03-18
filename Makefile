@@ -5,7 +5,7 @@ ALU_FILES = src/datapath/alu/alu.v \
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
 CONTROLPATH_FILES = src/controlpath/alu_instruction_decoder.v \
 	src/controlpath/controlpath.v
-ALL_FILES = src/rapids.v $(ALU_FILES, DATAPATH_FILES)
+ALL_FILES = src/rapids.v $(CONTROLPATH_FILES) $(DATAPATH_FILES)
 
 all: build/meta_test build/alu_test \
 	build/basic_datapath_test \

@@ -1,4 +1,5 @@
 module rapids(clk, instruction);
+  input clk;
   input[31:0] instruction;
 
   wire program_counter_inc;
@@ -18,8 +19,6 @@ module rapids(clk, instruction);
   wire copy_neg;
   wire[3:0] copy_select;
 
-
-
   controlpath C(
     .clk(clk),
     .instruction(instruction),
@@ -35,12 +34,12 @@ module rapids(clk, instruction);
     .alu_d_select(alu_d_select),
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
-    .alu_write(alu_write)
+    .alu_write(alu_write),
     .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
 
-  datapath datapath(
+  datapath D(
     .clk(clk),
     .op(alu_op),
     .form(alu_form),
@@ -59,3 +58,4 @@ module rapids(clk, instruction);
     .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
+endmodule
