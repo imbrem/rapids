@@ -19,18 +19,21 @@ module alu_instruction_decoder (
   );
 
   always @(*) begin
-  //General assignments
+    //General assignments
     {const_c, alu_op, alu_form, alu_vec_perci} = instruction[28:22];
     {alu_a_select, alu_b_select, alu_c_select, alu_d_select} = instruction[15:0];
     {alu_Y1_select, alu_Y2_select} = {alu_a_select, alu_c_select};
     alu_write = 2'b00;
     constant = 0;
     zero_reg = 4'b0000;
+    copy_neg = 0;
+    copy_select = 4'b0000;
+
     //Make sure to not write to register 0
-    if(alu_Y1_select != 4'b0)
-      alu_write[0] = 1;
-    if(alu_Y2_select != 4'b0)
-      alu_write[1] = 1;
+    if(alu_Y1_select != 4'b0) begin
+      alu_write[0] = 1; end
+    if(alu_Y2_select != 4'b0) begin
+      alu_write[1] = 1; end
 
     if(alu_op == 3'b000 | alu_op == 3'b100) begin //case addition and subtraction
       if(!alu_form & const_c) begin
@@ -39,10 +42,10 @@ module alu_instruction_decoder (
         constant = {14'b0, instruction[21:16], instruction[11:0]};
       end
       else if(!alu_form & !const_c) begin
-
+        //Left empty in case needed in future development
       end
       else if(alu_form & !const_c) begin
-
+        //Left empty in case needed in future development
       end
       else begin
         invalid_instruction = 1;
