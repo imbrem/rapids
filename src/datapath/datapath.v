@@ -19,34 +19,27 @@ module datapath(
 
   wire[31:0] v_Y1, v_Y2;
   wire[31:0] constant;
-  reg[31:0] v_A;
-  reg[31:0] v_B;
-  reg[31:0] v_C;
-  reg[31:0] v_D;
+  wire[31:0] v_A;
+  wire[31:0] v_B;
+  wire[31:0] v_C;
+  wire[31:0] v_D;
 
   reg[31:0] registers[15:0];
-  assign program_counter = registers[0];
+  wire[31:0] register_view[15:0];
 
-  always @(*) begin
-    if(A == 4'b0 & pc_inc) begin
-      v_A = 0; end
-    else begin
-      v_A = registers[A]; end
-    if(B == 4'b0 & pc_inc) begin
-      v_B = 0; end
-    else begin
-      v_B = registers[B]; end
-    if(const_c) begin
-      v_C = constant; end
-    else if(C == 4'b0 & pc_inc) begin
-      v_C = 0; end
-    else begin
-      v_C = registers[C]; end
-    if(D == 4'b0 & pc_inc) begin
-      v_D = 0; end
-    else begin
-      v_D = registers[D]; end
+  genvar i;
+  assign register_view[0] = pc_inc ? 32'b0 : registers[0];
+  for(i = 1; i < 16; i = i + 1) begin : register_view_assignment
+    assign register_view[i] = registers[i];
   end
+
+  assign program_counter = registers[0];
+  assign v_A = register_view[A];
+  assign v_B = register_view[B];
+  assign v_C = register_view[C];
+  assign v_D = register_view[D];
+  assign w_Y1 = write[0] & ~(pc_inc & (Y1 == 0));
+  assign w_Y2 = write[1] & ~(pc_inc & (Y2 == 0));
 
   ALU alu(
     .op(op), .form(form), .vec(vec),
@@ -54,11 +47,14 @@ module datapath(
     .copy_select(copy_select));
 
   always @(posedge clk) begin
-    if(write[0]) begin
+    if(w_Y1) begin
       registers[Y1] <= v_Y1;
     end
-    if(write[1]) begin
+    if(w_Y2) begin
       registers[Y2] <= v_Y2;
+    end
+    if(pc_inc) begin
+      registers[0] += 1;
     end
   end
 endmodule
