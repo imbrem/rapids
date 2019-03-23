@@ -8,12 +8,10 @@ module datapath(
   input[3:0] C,
   input[3:0] D,
   input[3:0] Y1, Y2,
-  input[3:0] zero_reg,
   input[1:0] write,
   input const_c,
-  input program_counter_inc,
+  input pc_inc,
   input[31:0] constant,
-  input copy_neg,
   input[3:0] copy_select
 );
 
@@ -27,21 +25,21 @@ module datapath(
   reg[31:0] registers[15:0];
 
   always @(*) begin
-    if(zero_reg[0]) begin
+    if(A == 4'b0 & pc_inc) begin
       v_A = 0; end
     else begin
       v_A = registers[A]; end
-    if(zero_reg[1]) begin
+    if(B == 4'b0 & pc_inc) begin
       v_B = 0; end
     else begin
       v_B = registers[B]; end
-    if(zero_reg[2]) begin
+    if(C == 4'b0 & pc_inc) begin
       v_C = 0; end
     else if(const_c) begin
       v_C = constant; end
     else begin
       v_C = registers[C]; end
-    if(zero_reg[3]) begin
+    if(D == 4'b0 & pc_inc) begin
       v_D = 0; end
     else begin
       v_D = registers[D]; end
@@ -50,7 +48,7 @@ module datapath(
   ALU alu(
     .op(op), .form(form), .vec(vec),
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
-    .copy_neg(copy_neg), .copy_select(copy_select));
+    .copy_select(copy_select));
 
   always @(posedge clk) begin
     if(write[0]) begin

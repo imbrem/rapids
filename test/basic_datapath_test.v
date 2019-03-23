@@ -10,12 +10,10 @@ module basic_datapath_test;
   reg[3:0] C;
   reg[3:0] D;
   reg[3:0] Y1, Y2;
-  reg[3:0] zero_reg;
   reg[1:0] write;
   reg const_c;
   reg[31:0] constant;
-  reg program_counter_inc;
-  reg copy_neg;
+  reg pc_inc;
   reg[3:0] copy_select;
 
   datapath datapath(
@@ -27,14 +25,12 @@ module basic_datapath_test;
     .B(B),
     .C(C),
     .D(D),
-    .zero_reg(zero_reg),
     .Y1(Y1),
     .Y2(Y2),
     .write(write),
     .const_c(const_c),
-    .program_counter_inc(program_counter_inc),
+    .pc_inc(pc_inc),
     .constant(constant),
-    .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
 
@@ -55,7 +51,6 @@ module basic_datapath_test;
     B = 0;
     C = 0;
     D = 0;
-    zero_reg = 4'b1011;
     Y1 = 1;
     Y2 = 0;
     write = 1;
@@ -94,7 +89,6 @@ module basic_datapath_test;
       err = 1;
     end
 
-    zero_reg = 4'b1010;
     A = 1;
     C = 2;
     Y1 = 3;
@@ -153,7 +147,6 @@ module basic_datapath_test;
 
     op = 3'b100;
     form = 1;
-    zero_reg = 4'b1000;
     A = 3;
     B = 1;
     C = 2;
@@ -186,7 +179,7 @@ module basic_datapath_test;
     end
 
     write = 0;
-    program_counter_inc = 0;
+    pc_inc = 0;
     #2;
 
     if(datapath.registers[3] !== 0) begin
@@ -197,7 +190,7 @@ module basic_datapath_test;
       err = 1;
     end
 
-    program_counter_inc = 1;
+    pc_inc = 1;
     #2
 
     if(datapath.registers[2] !== 7) begin

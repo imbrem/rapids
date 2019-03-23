@@ -3,7 +3,7 @@ module basic_controlpath_test;
 
   reg clk;
   reg[31:0] instruction;
-  wire program_counter_inc;
+  wire pc_inc;
   wire[2:0] alu_op;
   wire alu_form;
   wire[1:0] alu_vec_perci;
@@ -23,7 +23,7 @@ module basic_controlpath_test;
   controlpath C(
     .clk(clk),
     .instruction(instruction),
-    .program_counter_inc(program_counter_inc),
+    .pc_inc(pc_inc),
     .alu_op(alu_op),
     .alu_form(alu_form),
     .alu_vec_perci(alu_vec_perci),
