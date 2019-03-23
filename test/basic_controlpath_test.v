@@ -7,8 +7,8 @@ module basic_controlpath_test;
   wire[2:0] alu_op;
   wire alu_form;
   wire[1:0] alu_vec_perci;
+  wire[3:0] alu_config;
   wire const_c;
-  wire[3:0] zero_reg;
   wire[3:0] alu_a_select;
   wire[3:0] alu_b_select;
   wire[3:0] alu_c_select;
@@ -16,7 +16,6 @@ module basic_controlpath_test;
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
   wire[1:0] alu_write;
-  wire copy_neg;
   wire[3:0] copy_select;
 
 
@@ -26,9 +25,9 @@ module basic_controlpath_test;
     .pc_inc(pc_inc),
     .alu_op(alu_op),
     .alu_form(alu_form),
+    .alu_config(alu_config),
     .alu_vec_perci(alu_vec_perci),
     .const_c(const_c),
-    .zero_reg(zero_reg),
     .alu_a_select(alu_a_select),
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
@@ -36,7 +35,6 @@ module basic_controlpath_test;
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
 

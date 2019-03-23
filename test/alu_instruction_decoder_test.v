@@ -6,17 +6,16 @@ module alu_instruction_decoder_test;
   wire [2:0] alu_op;
   wire [1:0] alu_vec_perci;
   wire alu_from;
+  wire[3:0] alu_config;
   wire const_c;
   wire[31:0] constant;
   wire[1:0] alu_write;
-  wire[3:0] zero_reg;
   wire[3:0] alu_a_select;
   wire[3:0] alu_b_select;
   wire[3:0] alu_c_select;
   wire[3:0] alu_d_select;
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
-  wire copy_neg;
   wire[3:0] copy_select;
 
   alu_instruction_decoder d(
@@ -25,9 +24,9 @@ module alu_instruction_decoder_test;
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
     .alu_form(alu_form),
+    .alu_config(alu_config),
     .const_c(const_c),
     .constant(constant),
-    .zero_reg(zero_reg),
     .alu_a_select(alu_a_select),
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
@@ -35,7 +34,6 @@ module alu_instruction_decoder_test;
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
 
@@ -52,10 +50,10 @@ module alu_instruction_decoder_test;
         alu_op != 3'b000 |
         alu_vec_perci != 2'b10 |
         alu_form != 0 |
+        alu_config != 0 |
         const_c != 0 |
-        constant != 32'b0 |
+        constant != 32'h1234 |
         alu_write != 2'b11 |
-        zero_reg != 4'b0000 |
         alu_a_select != 4'h1 |
         alu_b_select != 4'h2 |
         alu_c_select != 4'h3 |
@@ -68,17 +66,17 @@ module alu_instruction_decoder_test;
     end
 
     //Try constant operation 256
-    instruction = 32'h10801800;
+    instruction = 32'h10810800;
     #1;
     if(
         alu_op != 3'b000 |
         alu_vec_perci != 2'b10 |
         alu_form != 0 |
         const_c != 1 |
-        constant != 32'd2048 |
+        constant != 32'h0800 |
         alu_write != 2'b01 |
         alu_a_select != 4'h1 |
-        alu_b_select != 4'h8 |
+        alu_b_select != 4'h0 |
         alu_c_select != 4'h0 |
         alu_d_select != 4'h0 |
         alu_Y1_select != 4'h1 |
@@ -89,36 +87,29 @@ module alu_instruction_decoder_test;
     end
 
     //Try constant 4 form vector half subtraction
-    instruction = 32'h18501001;
+    instruction = 32'h18511001;
     #1;
     if(
       alu_op != 3'b100 |
       alu_vec_perci != 01 |
       alu_form != 0 |
+      alu_config != 1 |
       const_c != 1|
-      constant != 32'h00010001 |
+      constant != 32'h00001001 |
       alu_write != 2'b01 |
       alu_a_select != 4'h1 |
       alu_Y1_select != 4'h1
       )begin
-        $display("ALU INSTRUCTION DECODER TEST: vector constnat subtraction 4 form test failed, got %d", constant);
+        $display("ALU INSTRUCTION DECODER TEST: vector constnat subtraction 4 form test failed, got %d", alu_write);
         err = 1;
       end
-
-    //Try invalid instruction of 3 form constant operation
-    instruction = 32'h1180100;
-    #1;
-    if(invalid_instruction != 1)begin
-      $display("ALUINSTRUCTION DECODER TEST: invalid instruction signal test failed, expected 0 got %d", invalid_instruction);
-      err = 1;
-    end
 
     //Try copy instruction with config being negate lower two bits
     instruction = 32'h05301234;
     #1;
     if(
       alu_op != 3'b010 |
-      copy_neg != 1 |
+      alu_form != 1 |
       copy_select != 4'b0011 |
       alu_a_select != 4'h1 |
       alu_b_select != 4'h2 |

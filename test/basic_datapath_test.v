@@ -44,6 +44,7 @@ module basic_datapath_test;
 
     err = 0;
 
+    pc_inc = 1;
     op = 0;
     form = 0;
     vec = 0;

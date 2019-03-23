@@ -3,6 +3,7 @@ module datapath(
   input[2:0] op,
   input form,
   input[1:0] vec,
+  input[3:0] alu_config,
   input[3:0] A,
   input[3:0] B,
   input[3:0] C,
@@ -33,10 +34,10 @@ module datapath(
       v_B = 0; end
     else begin
       v_B = registers[B]; end
-    if(C == 4'b0 & pc_inc) begin
-      v_C = 0; end
-    else if(const_c) begin
+    if(const_c) begin
       v_C = constant; end
+    else if(C == 4'b0 & pc_inc) begin
+      v_C = 0; end
     else begin
       v_C = registers[C]; end
     if(D == 4'b0 & pc_inc) begin

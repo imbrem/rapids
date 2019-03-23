@@ -6,6 +6,7 @@ module rapids(clk, instruction);
   wire[2:0] alu_op;
   wire[1:0] alu_vec_perci;
   wire alu_form;
+  wire[3:0] alu_config;
   wire const_c;
   wire[31:0] constant;
   wire[3:0] zero_reg;
@@ -16,7 +17,6 @@ module rapids(clk, instruction);
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
   wire[1:0] alu_write;
-  wire copy_neg;
   wire[3:0] copy_select;
 
   controlpath C(
@@ -26,8 +26,8 @@ module rapids(clk, instruction);
     .alu_op(alu_op),
     .alu_form(alu_form),
     .alu_vec_perci(alu_vec_perci),
+    .alu_config(alu_config),
     .const_c(const_c),
-    .zero_reg(zero_reg),
     .alu_a_select(alu_a_select),
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
@@ -35,7 +35,6 @@ module rapids(clk, instruction);
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
 
@@ -44,6 +43,7 @@ module rapids(clk, instruction);
     .op(alu_op),
     .form(alu_form),
     .vec(alu_vec_perci),
+    .alu_config(alu_config),
     .A(alu_a_select),
     .B(alu_b_select),
     .C(alu_c_select),
