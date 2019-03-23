@@ -88,6 +88,23 @@ module alu_instruction_decoder_test;
         err = 1;
     end
 
+    //Try constant 4 form vector half subtraction
+    instruction = 32'h18501001;
+    #1;
+    if(
+      alu_op != 3'b100 |
+      alu_vec_perci != 01 |
+      alu_form != 0 |
+      const_c != 1|
+      constant != 32'h00010001 |
+      alu_write != 2'b01 |
+      alu_a_select != 4'h1 |
+      alu_Y1_select != 4'h1
+      )begin
+        $display("ALU INSTRUCTION DECODER TEST: vector constnat subtraction 4 form test failed, got %d", constant);
+        err = 1;
+      end
+
     //Try invalid instruction of 3 form constant operation
     instruction = 32'h1180100;
     #1;

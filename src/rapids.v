@@ -2,7 +2,7 @@ module rapids(clk, instruction);
   input clk;
   input[31:0] instruction;
 
-  wire program_counter_inc;
+  wire pc_inc;
   wire[2:0] alu_op;
   wire[1:0] alu_vec_perci;
   wire alu_form;
@@ -22,7 +22,7 @@ module rapids(clk, instruction);
   controlpath C(
     .clk(clk),
     .instruction(instruction),
-    .program_counter_inc(program_counter_inc),
+    .pc_inc(pc_inc),
     .alu_op(alu_op),
     .alu_form(alu_form),
     .alu_vec_perci(alu_vec_perci),
@@ -48,14 +48,12 @@ module rapids(clk, instruction);
     .B(alu_b_select),
     .C(alu_c_select),
     .D(alu_d_select),
-    .zero_reg(zero_reg),
     .Y1(alu_Y1_select),
     .Y2(alu_Y2_select),
     .write(alu_write),
     .const_c(const_c),
-    .program_counter_inc(program_counter_inc),
+    .pc_inc(pc_inc),
     .constant(constant),
-    .copy_neg(copy_neg),
     .copy_select(copy_select)
     );
 endmodule
