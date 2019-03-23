@@ -17,7 +17,6 @@ module controlpath(
     output[1:0] alu_write,
     output[3:0] copy_select
   );
-  localparam  stoped = 4'b1000;
 
   reg[3:0] current_state, next_state;
   wire invalid_instruction;
@@ -41,10 +40,4 @@ module controlpath(
     .copy_select(copy_select)
     );
 
-  always @(posedge clk, posedge invalid_instruction) begin
-    if(invalid_instruction)
-      current_state <= stoped;
-    else
-      current_state <= next_state;
-  end
 endmodule
