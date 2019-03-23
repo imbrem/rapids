@@ -18,6 +18,7 @@ module rapids(clk, instruction);
   wire[3:0] alu_Y2_select;
   wire[1:0] alu_write;
   wire[3:0] copy_select;
+  wire[31:0] program_counter;
 
   controlpath C(
     .clk(clk),
@@ -54,6 +55,17 @@ module rapids(clk, instruction);
     .const_c(const_c),
     .pc_inc(pc_inc),
     .constant(constant),
-    .copy_select(copy_select)
+    .copy_select(copy_select),
+    .program_counter(program_counter)
     );
+
+  MMU mmu(
+    .clk(clk),
+    .instr_addr(program_counter),
+    .data_addr(0),
+    .data_in(0),
+    .rd(1'b0),
+    .wd(1'b0)
+    );
+
 endmodule

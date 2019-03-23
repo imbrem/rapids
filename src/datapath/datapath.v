@@ -13,7 +13,8 @@ module datapath(
   input const_c,
   input pc_inc,
   input[31:0] constant,
-  input[3:0] copy_select
+  input[3:0] copy_select,
+  output[31:0] program_counter
 );
 
   wire[31:0] v_Y1, v_Y2;
@@ -24,6 +25,7 @@ module datapath(
   reg[31:0] v_D;
 
   reg[31:0] registers[15:0];
+  assign program_counter = registers[0];
 
   always @(*) begin
     if(A == 4'b0 & pc_inc) begin
