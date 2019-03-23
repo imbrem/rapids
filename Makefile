@@ -5,20 +5,23 @@ ALU_FILES = src/datapath/alu/alu.v \
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
 CONTROLPATH_FILES = src/controlpath/alu_instruction_decoder.v \
 	src/controlpath/controlpath.v
-ALL_FILES = src/rapids.v $(CONTROLPATH_FILES) $(DATAPATH_FILES)
+MMU_FILES = src/memory/mmu.v
+ALL_FILES = src/rapids.v $(CONTROLPATH_FILES) $(DATAPATH_FILES) $(MMU_FILES)
 
 all: build/meta_test build/alu_test \
 	build/basic_datapath_test \
 	build/alu_instruction_decoder_test \
 	build/basic_controlpath_test \
-	build/basic_rapids_test
+	build/basic_rapids_test \
+	build/mmu_test
 
 test: build/meta_test.vcd \
 	build/alu_test.vcd \
 	build/basic_datapath_test.vcd \
 	build/alu_instruction_decoder_test.vcd \
 	build/basic_controlpath_test.vcd \
-	build/basic_rapids_test.vcd
+	build/basic_rapids_test.vcd \
+	build/mmu_test.vcd
 
 build/meta_test.vcd: build/meta_test
 	vvp build/meta_test
@@ -37,6 +40,9 @@ build/basic_controlpath_test.vcd: build/basic_controlpath_test
 
 build/basic_rapids_test.vcd: build/basic_rapids_test
 	vvp build/basic_rapids_test
+
+build/mmu_test.vcd: build/mmu_test
+	vvp build/mmu_test
 
 build/meta_test: test/meta_test.v
 	mkdir -p build
@@ -65,6 +71,10 @@ build/basic_rapids_test: test/basic_rapids_test.v $(ALL_FILES)
 	mkdir -p build
 	iverilog -o build/basic_rapids_test \
 		test/basic_rapids_test.v $(ALL_FILES)
+
+build/mmu_test: test/mmu_test.v $(MMU_FILES)
+	mkdir -p build
+	iverilog -o build/mmu_test test/mmu_test.v $(MMU_FILES)
 
 clean:
 	rm -f build/*
