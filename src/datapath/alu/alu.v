@@ -20,6 +20,18 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2, copy_select);
   wire[31:0] add_Y1, add_Y2;
   wire[31:0] sub_Y1, sub_Y2;
   wire[31:0] copy_Y1, copy_Y2;
+
+  localparam
+    ADD = 3'b000,
+    SUB = 3'b100,
+    MULT = 3'b001,
+    DIV = 3'b101,
+    AND = 3'b010,
+    OR = 3'b011,
+    XOR = 3'b110,
+    COPY = 3'b111;
+
+
   adder adder (
     .form(form), .vec(vec), .A(A), .B(B), .C(C), .D(D),
     .Y1(add_Y1), .Y2(add_Y2)
@@ -35,13 +47,13 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2, copy_select);
 
   always @(*) begin
     case (op)
-      3'b000: begin // ADD
+      ADD: begin // ADD
         {Y1, Y2} = {add_Y1, add_Y2};
       end
-      3'b100: begin // SUB
+      SUB: begin // SUB
         {Y1, Y2} = {sub_Y1, sub_Y2};
       end
-      3'b010: begin
+      COPY: begin
         {Y1, Y2} = {copy_Y1, copy_Y2};
       end
     endcase

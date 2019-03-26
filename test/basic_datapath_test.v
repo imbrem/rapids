@@ -16,6 +16,16 @@ module basic_datapath_test;
   reg pc_inc;
   reg[3:0] copy_select;
 
+  localparam
+    ADD = 3'b000,
+    SUB = 3'b100,
+    MULT = 3'b001,
+    DIV = 3'b101,
+    AND = 3'b010,
+    OR = 3'b011,
+    XOR = 3'b110,
+    COPY = 3'b111;
+
   datapath datapath(
     .clk(clk),
     .alu_op(op),
@@ -45,7 +55,7 @@ module basic_datapath_test;
     err = 0;
 
     pc_inc = 1;
-    op = 0;
+    op = ADD;
     form = 0;
     vec = 0;
     A = 0;
@@ -146,7 +156,7 @@ module basic_datapath_test;
       err = 1;
     end
 
-    op = 3'b100;
+    op = SUB;
     form = 1;
     A = 3;
     B = 1;

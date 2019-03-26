@@ -8,6 +8,16 @@ module alu_test;
   wire[31:0] Y1, Y2;
   reg[3:0] copy_select;
 
+  localparam
+    ADD = 3'b000,
+    SUB = 3'b100,
+    MULT = 3'b001,
+    DIV = 3'b101,
+    AND = 3'b010,
+    OR = 3'b011,
+    XOR = 3'b110,
+    COPY = 3'b111;
+
   ALU alu (
     .op(op),
     .form(form),
@@ -30,7 +40,7 @@ module alu_test;
     D = 2;
     form = 1;
     vec = 2;
-    op = 0;
+    op = ADD;
     copy_select = 4'b0;
     #1;
     if({Y1, Y2} != 6) begin
@@ -77,7 +87,7 @@ module alu_test;
     // Try 1 - 2 - 3 = -4
     vec = 2;
     form = 1;
-    op = 4;
+    op = SUB;
     #1;
     if({Y1, Y2} != -4) begin
       $display(
@@ -99,7 +109,7 @@ module alu_test;
     end
 
     //Try copy 1 with lower 8 bits negated.
-    op = 3'b010;
+    op = COPY;
     form = 1;
     copy_select = 4'b0001;
     #1;
