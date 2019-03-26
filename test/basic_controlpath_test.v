@@ -3,6 +3,8 @@ module basic_controlpath_test;
 
   reg clk;
   reg[31:0] instruction;
+  reg instr_segv, data_segv;
+  reg wait_data, wait_instr;
   wire pc_inc;
   wire[2:0] alu_op;
   wire alu_form;
@@ -22,6 +24,10 @@ module basic_controlpath_test;
   controlpath C(
     .clk(clk),
     .instruction(instruction),
+    .instr_segv(instr_segv),
+    .data_segv(data_segv),
+    .wait_instr(wait_instr),
+    .wait_data(wait_data),
     .pc_inc(pc_inc),
     .alu_op(alu_op),
     .alu_form(alu_form),

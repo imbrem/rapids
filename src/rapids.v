@@ -1,6 +1,7 @@
-module rapids(clk, instruction);
+module rapids(clk);
   input clk;
-  input[31:0] instruction;
+
+  wire[31:0] instruction;
 
   wire pc_inc;
   wire[2:0] alu_op;
@@ -20,9 +21,19 @@ module rapids(clk, instruction);
   wire[3:0] copy_select;
   wire[31:0] program_counter;
 
+  wire[31:0] mem_data;
+  wire instr_segv;
+  wire data_segv;
+  wire wait_instr;
+  wire wait_data;
+
   controlpath C(
     .clk(clk),
     .instruction(instruction),
+    .instr_segv(instr_segv),
+    .data_segv(data_segv),
+    .wait_instr(wait_instr),
+    .wait_data(wait_data),
     .pc_inc(pc_inc),
     .alu_op(alu_op),
     .alu_form(alu_form),
@@ -41,7 +52,7 @@ module rapids(clk, instruction);
 
   datapath D(
     .clk(clk),
-    .op(alu_op),
+    .alu_op(alu_op),
     .form(alu_form),
     .vec(alu_vec_perci),
     .alu_config(alu_config),
@@ -56,6 +67,7 @@ module rapids(clk, instruction);
     .pc_inc(pc_inc),
     .constant(constant),
     .copy_select(copy_select),
+    .mem_data(mem_data),
     .program_counter(program_counter)
     );
 
@@ -65,7 +77,13 @@ module rapids(clk, instruction);
     .data_addr(0),
     .data_in(0),
     .rd(1'b0),
-    .wd(1'b0)
+    .wd(1'b0),
+    .instr(instruction),
+    .data(mem_data),
+    .wait_instr(wait_instr),
+    .wait_data(wait_data),
+    .instr_segv(instr_segv),
+    .data_segv(data_segv)
     );
 
 endmodule

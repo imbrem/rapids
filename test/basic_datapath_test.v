@@ -18,7 +18,7 @@ module basic_datapath_test;
 
   datapath datapath(
     .clk(clk),
-    .op(op),
+    .alu_op(op),
     .form(form),
     .vec(vec),
     .A(A),

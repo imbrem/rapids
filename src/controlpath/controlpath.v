@@ -1,6 +1,10 @@
 module controlpath(
     input clk,
     input[31:0] instruction,
+    input instr_segv,
+    input data_segv,
+    input wait_instr,
+    input wait_data,
     output pc_inc,
     output[2:0] alu_op,
     output alu_form,
@@ -21,7 +25,7 @@ module controlpath(
   reg[3:0] current_state, next_state;
   wire invalid_instruction;
 
-  //controlpath needs mux for different type of operations such as PC
+  //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d(
     .instruction(instruction),
     .invalid_instruction(invalid_instruction),

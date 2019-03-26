@@ -4,8 +4,8 @@ module basic_rapids_test;
   reg clk;
   reg[31:0] instruction;
 
-  rapids rapids(.clk(clk), .instruction(instruction));
-  
+  rapids rapids(.clk(clk));
+
   initial begin
     $dumpfile("build/basic_rapids_test.vcd");
     $dumpvars;

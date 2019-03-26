@@ -1,6 +1,6 @@
 module datapath(
   input clk,
-  input[2:0] op,
+  input[2:0] alu_op,
   input form,
   input[1:0] vec,
   input[3:0] alu_config,
@@ -14,6 +14,7 @@ module datapath(
   input pc_inc,
   input[31:0] constant,
   input[3:0] copy_select,
+  input[31:0] mem_data,
   output[31:0] program_counter
 );
 
@@ -21,7 +22,7 @@ module datapath(
   wire[31:0] constant;
   wire[31:0] v_A;
   wire[31:0] v_B;
-  wire[31:0] v_C;
+  reg[31:0] v_C;
   wire[31:0] v_D;
 
   reg[31:0] registers[15:0];
@@ -36,13 +37,18 @@ module datapath(
   assign program_counter = registers[0];
   assign v_A = register_view[A];
   assign v_B = register_view[B];
-  assign v_C = register_view[C];
+  always @(*) begin
+    if(const_c)
+      v_C = constant;
+    else
+      v_C = register_view[C];
+  end
   assign v_D = register_view[D];
   assign w_Y1 = write[0] & ~(pc_inc & (Y1 == 0));
   assign w_Y2 = write[1] & ~(pc_inc & (Y2 == 0));
 
   ALU alu(
-    .op(op), .form(form), .vec(vec),
+    .op(alu_op), .form(form), .vec(vec),
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
     .copy_select(copy_select));
 

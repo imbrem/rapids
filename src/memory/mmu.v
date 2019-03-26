@@ -32,7 +32,7 @@ module MMU(
   wire data_too_high = t_data_addr >= 128;
 
   assign instr_segv = (instr_addr == 0) | instr_too_high | instr_special;
-  assign data_addr = (data_addr == 0) | data_too_high;
+  assign data_segv = (data_addr == 0) | data_too_high;
 
   assign wait_data = 1'b0;
   assign wait_instr = 1'b0;
