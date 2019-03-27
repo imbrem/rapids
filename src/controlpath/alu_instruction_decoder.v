@@ -24,19 +24,15 @@ module alu_instruction_decoder (
     {alu_a_select, alu_b_select, alu_c_select, alu_d_select} = instruction[15:0];
     alu_write = 2'b00;
     constant = {16'b0, instruction[15:0]};
-    logic_select = 4'b0000;
+    logic_select = instruction[23:20];
 
-    //This assumes that constant bit can be used for something else
+    //This assumes that constant bit can be used for non-arithemetic operations
     if(alu_op == 3'b000 | alu_op == 3'b100) begin //case addition and subtraction
       if (const_c) begin
         alu_a_select = alu_config;
         {alu_b_select, alu_d_select} = 0;
       end
     end//end case addition and subtraction
-
-    else if(alu_op == 3'b010) begin //case copy
-      logic_select = instruction[23:20];
-    end //case copy
 
     //Make sure to not write to register 0
     {alu_Y1_select, alu_Y2_select} = {alu_a_select, alu_b_select};

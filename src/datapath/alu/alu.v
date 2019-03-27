@@ -31,7 +31,6 @@ module ALU(op, form, vec, A, B, C, D, Y1, Y2, logic_select);
     XOR = 3'b110,
     COPY = 3'b111;
 
-
   adder adder (
     .form(form), .vec(vec), .A(A), .B(B), .C(C), .D(D),
     .Y1(add_Y1), .Y2(add_Y2)
