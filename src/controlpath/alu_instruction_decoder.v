@@ -14,7 +14,7 @@ module alu_instruction_decoder (
   output reg[3:0] alu_Y1_select,
   output reg[3:0] alu_Y2_select,
   output reg[1:0] alu_write,
-  output reg[3:0] copy_select
+  output reg[3:0] logic_select
   );
 
   always @(*) begin
@@ -24,7 +24,7 @@ module alu_instruction_decoder (
     {alu_a_select, alu_b_select, alu_c_select, alu_d_select} = instruction[15:0];
     alu_write = 2'b00;
     constant = {16'b0, instruction[15:0]};
-    copy_select = 4'b0000;
+    logic_select = 4'b0000;
 
     //This assumes that constant bit can be used for something else
     if(alu_op == 3'b000 | alu_op == 3'b100) begin //case addition and subtraction
@@ -35,11 +35,11 @@ module alu_instruction_decoder (
     end//end case addition and subtraction
 
     else if(alu_op == 3'b010) begin //case copy
-      copy_select = instruction[23:20];
+      logic_select = instruction[23:20];
     end //case copy
 
     //Make sure to not write to register 0
-    {alu_Y1_select, alu_Y2_select} = {alu_a_select, alu_c_select};
+    {alu_Y1_select, alu_Y2_select} = {alu_a_select, alu_b_select};
     if(alu_Y1_select != 4'b0) begin
       alu_write[0] = 1; end
     if(alu_Y2_select != 4'b0) begin

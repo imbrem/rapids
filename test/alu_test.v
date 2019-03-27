@@ -6,7 +6,7 @@ module alu_test;
   reg[1:0] vec;
   reg[31:0] A, B, C, D;
   wire[31:0] Y1, Y2;
-  reg[3:0] copy_select;
+  reg[3:0] logic_select;
 
   localparam
     ADD = 3'b000,
@@ -24,7 +24,7 @@ module alu_test;
     .vec(vec),
     .A(A), .B(B), .C(C), .D(D),
     .Y1(Y1), .Y2(Y2),
-    .copy_select(copy_select)
+    .logic_select(logic_select)
   );
 
   initial begin
@@ -41,7 +41,7 @@ module alu_test;
     form = 1;
     vec = 2;
     op = ADD;
-    copy_select = 4'b0;
+    logic_select = 4'b0;
     #1;
     if({Y1, Y2} != 6) begin
       $display(
@@ -104,19 +104,6 @@ module alu_test;
       $display(
         "ALU TEST: Subtraction form 0 not working: invalid result %d (expected -2 and 0)",
         {Y1, Y2}
-      );
-      err = 1;
-    end
-
-    //Try copy 1 with lower 8 bits negated.
-    op = COPY;
-    form = 1;
-    copy_select = 4'b0001;
-    #1;
-    if(Y1 != 32'd252) begin
-      $display(
-        "ALU TEST: Copy with lower 8 bits negated not working, invalid result %d, expected 32'd252.",
-        {Y1}
       );
       err = 1;
     end

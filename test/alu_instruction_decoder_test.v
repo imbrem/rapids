@@ -16,7 +16,7 @@ module alu_instruction_decoder_test;
   wire[3:0] alu_d_select;
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
-  wire[3:0] copy_select;
+  wire[3:0] logic_select;
 
   alu_instruction_decoder d(
     .instruction(instruction),
@@ -34,7 +34,7 @@ module alu_instruction_decoder_test;
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .copy_select(copy_select)
+    .logic_select(logic_select)
     );
 
   initial begin
@@ -59,7 +59,7 @@ module alu_instruction_decoder_test;
         alu_c_select != 4'h3 |
         alu_d_select != 4'h4 |
         alu_Y1_select != 4'h1 |
-        alu_Y2_select != 4'h3
+        alu_Y2_select != 4'h2
       )begin
         $display("ALU INSTRUCTION DECODER TEST: none-vector addition 4 form test failed, got ");
         err = 1;
@@ -110,13 +110,13 @@ module alu_instruction_decoder_test;
     if(
       alu_op != 3'b010 |
       alu_form != 1 |
-      copy_select != 4'b0011 |
+      logic_select != 4'b0011 |
       alu_a_select != 4'h1 |
       alu_b_select != 4'h2 |
       alu_c_select != 4'h3 |
       alu_d_select != 4'h4 |
       alu_Y1_select != 4'h1 |
-      alu_Y2_select != 4'h3
+      alu_Y2_select != 4'h2
       )begin
         $display("ALU INSTRUCTION DECODER TEST: copy opeartion failed, got ");
         err = 1;

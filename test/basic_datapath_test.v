@@ -14,7 +14,7 @@ module basic_datapath_test;
   reg const_c;
   reg[31:0] constant;
   reg pc_inc;
-  reg[3:0] copy_select;
+  reg[3:0] logic_select;
 
   localparam
     ADD = 3'b000,
@@ -41,7 +41,7 @@ module basic_datapath_test;
     .const_c(const_c),
     .pc_inc(pc_inc),
     .constant(constant),
-    .copy_select(copy_select)
+    .logic_select(logic_select)
     );
 
   always begin

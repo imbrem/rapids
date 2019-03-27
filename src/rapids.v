@@ -18,7 +18,7 @@ module rapids(clk);
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
   wire[1:0] alu_write;
-  wire[3:0] copy_select;
+  wire[3:0] logic_select;
   wire[31:0] program_counter;
 
   wire[31:0] mem_data;
@@ -47,7 +47,7 @@ module rapids(clk);
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .copy_select(copy_select)
+    .logic_select(logic_select)
     );
 
   datapath D(
@@ -66,7 +66,7 @@ module rapids(clk);
     .const_c(const_c),
     .pc_inc(pc_inc),
     .constant(constant),
-    .copy_select(copy_select),
+    .logic_select(logic_select),
     .mem_data(mem_data),
     .program_counter(program_counter)
     );

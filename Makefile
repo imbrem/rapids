@@ -1,7 +1,7 @@
 ALU_FILES = src/datapath/alu/alu.v \
 	src/datapath/alu/adder.v \
 	src/datapath/alu/subtractor.v \
-	src/datapath/alu/copier.v
+	src/datapath/alu/logic_unit.v
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
 CONTROLPATH_FILES = src/controlpath/alu_instruction_decoder.v \
 	src/controlpath/controlpath.v

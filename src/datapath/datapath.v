@@ -13,7 +13,7 @@ module datapath(
   input const_c,
   input pc_inc,
   input[31:0] constant,
-  input[3:0] copy_select,
+  input[3:0] logic_select,
   input[31:0] mem_data,
   output[31:0] program_counter
 );
@@ -50,7 +50,7 @@ module datapath(
   ALU alu(
     .op(alu_op), .form(form), .vec(vec),
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
-    .copy_select(copy_select));
+    .logic_select(logic_select));
 
   always @(posedge clk) begin
     if(w_Y1) begin

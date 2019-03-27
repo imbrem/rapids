@@ -18,7 +18,7 @@ module basic_controlpath_test;
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
   wire[1:0] alu_write;
-  wire[3:0] copy_select;
+  wire[3:0] logic_select;
 
 
   controlpath C(
@@ -41,7 +41,7 @@ module basic_controlpath_test;
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .copy_select(copy_select)
+    .logic_select(logic_select)
     );
 
   initial begin

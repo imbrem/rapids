@@ -19,7 +19,7 @@ module controlpath(
     output[3:0] alu_Y1_select,
     output[3:0] alu_Y2_select,
     output[1:0] alu_write,
-    output[3:0] copy_select
+    output[3:0] logic_select
   );
 
   reg[3:0] current_state, next_state;
@@ -41,7 +41,7 @@ module controlpath(
     .alu_d_select(alu_d_select),
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
-    .copy_select(copy_select)
+    .logic_select(logic_select)
     );
 
 endmodule
