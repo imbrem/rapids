@@ -23,6 +23,8 @@ module rapids(clk);
 
   wire[3:0] mem_loca_addr;
   wire[31:0] mem_loca;
+  wire[3:0] reg_addr;
+  wire ld, st;
   wire[31:0] ld_data;
   wire[31:0] st_data;
 
@@ -39,19 +41,23 @@ module rapids(clk);
     .wait_instr(wait_instr),
     .wait_data(wait_data),
     .pc_inc(pc_inc),
-    .alu_op(alu_op),
+    .opcode(alu_op),
     .alu_form(alu_form),
     .alu_vec_perci(alu_vec_perci),
     .alu_config(alu_config),
     .const_c(const_c),
-    .alu_a_select(alu_a_select),
+    .a_select(alu_a_select),
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
     .alu_d_select(alu_d_select),
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
-    .alu_write(alu_write),
-    .logic_select(logic_select)
+    .reg_write(alu_write),
+    .op_select(logic_select),
+    .st(st),
+    .ld(ld),
+    .mem_loca_addr(mem_loca_addr),
+    .reg_addr(reg_addr)
     );
 
   datapath D(
@@ -72,6 +78,8 @@ module rapids(clk);
     .constant(constant),
     .logic_select(logic_select),
     .mem_loca_addr(mem_loca_addr),
+    .reg_addr(reg_addr),
+    .ld(ld),
     .ld_data(ld_data),
     .st_data(st_data),
     .program_counter(program_counter),
@@ -81,12 +89,12 @@ module rapids(clk);
   MMU mmu(
     .clk(clk),
     .instr_addr(program_counter),
-    .data_addr(0),
-    .data_in(0),
-    .rd(1'b0),
-    .wd(1'b0),
+    .data_addr(mem_loca),
+    .data_in(st_data),
+    .rd(ld),
+    .wd(st),
     .instr(instruction),
-    .data(mem_data),
+    .data(ld_data),
     .wait_instr(wait_instr),
     .wait_data(wait_data),
     .instr_segv(instr_segv),

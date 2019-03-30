@@ -4,6 +4,7 @@ ALU_FILES = src/datapath/alu/alu.v \
 	src/datapath/alu/logic_unit.v
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
 CONTROLPATH_FILES = src/controlpath/alu_instruction_decoder.v \
+	src/controlpath/mmu_decoder.v \
 	src/controlpath/controlpath.v
 MMU_FILES = src/memory/mmu.v
 ALL_FILES = src/rapids.v $(CONTROLPATH_FILES) $(DATAPATH_FILES) $(MMU_FILES)

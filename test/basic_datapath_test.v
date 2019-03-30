@@ -17,6 +17,7 @@ module basic_datapath_test;
   reg[3:0] logic_select;
   reg[3:0] mem_loca_addr;
   reg[31:0] ld_data;
+  reg ld;
   wire[31:0] st_data;
   wire[31:0] program_counter;
   wire[31:0] mem_loca;
@@ -49,6 +50,7 @@ module basic_datapath_test;
     .logic_select(logic_select),
     .mem_loca_addr(mem_loca_addr),
     .ld_data(ld_data),
+    .ld(ld),
     .st_data(st_data),
     .program_counter(program_counter),
     .mem_loca(mem_loca)
