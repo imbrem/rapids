@@ -46,6 +46,7 @@ module rapids(clk);
     .alu_vec_perci(alu_vec_perci),
     .alu_config(alu_config),
     .const_c(const_c),
+    .constant(constant),
     .a_select(alu_a_select),
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
