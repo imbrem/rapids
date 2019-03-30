@@ -15,6 +15,11 @@ module basic_datapath_test;
   reg[31:0] constant;
   reg pc_inc;
   reg[3:0] logic_select;
+  reg[3:0] mem_loca_addr;
+  reg[31:0] ld_data;
+  wire[31:0] st_data;
+  wire[31:0] program_counter;
+  wire[31:0] mem_loca;
 
   localparam
     ADD = 3'b000,
@@ -41,7 +46,12 @@ module basic_datapath_test;
     .const_c(const_c),
     .pc_inc(pc_inc),
     .constant(constant),
-    .logic_select(logic_select)
+    .logic_select(logic_select),
+    .mem_loca_addr(mem_loca_addr),
+    .ld_data(ld_data),
+    .st_data(st_data),
+    .program_counter(program_counter),
+    .mem_loca(mem_loca)
     );
 
   always begin
@@ -67,6 +77,8 @@ module basic_datapath_test;
     write = 1;
     const_c = 1;
     constant = 5;
+    mem_loca_addr = 0;
+    ld_data = 0;
     #2;
 
     if(datapath.registers[1] !== 5) begin

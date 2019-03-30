@@ -14,8 +14,11 @@ module datapath(
   input pc_inc,
   input[31:0] constant,
   input[3:0] logic_select,
-  input[31:0] mem_data,
-  output[31:0] program_counter
+  input[3:0] mem_loca_addr,
+  input[31:0] ld_data,
+  output[31:0] st_data,
+  output[31:0] program_counter,
+  output[31:0] mem_loca
 );
 
   wire[31:0] v_Y1, v_Y2;
