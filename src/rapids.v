@@ -35,6 +35,7 @@ module rapids(clk);
 
   controlpath C(
     .clk(clk),
+    .go(go),
     .instruction(instruction),
     .instr_segv(instr_segv),
     .data_segv(data_segv),

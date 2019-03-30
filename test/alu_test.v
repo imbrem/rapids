@@ -1,6 +1,7 @@
 module alu_test;
   reg err;
 
+  reg clk;
   reg[2:0] op;
   reg form;
   reg[1:0] vec;

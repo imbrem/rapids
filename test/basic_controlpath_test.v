@@ -2,6 +2,7 @@ module basic_controlpath_test;
   reg err;
 
   reg clk;
+  reg go;
   reg[31:0] instruction;
   reg instr_segv, data_segv;
   reg wait_data, wait_instr;
@@ -27,6 +28,7 @@ module basic_controlpath_test;
 
   controlpath C(
     .clk(clk),
+    .go(go),
     .instruction(instruction),
     .instr_segv(instr_segv),
     .data_segv(data_segv),

@@ -1,4 +1,5 @@
 module controlpath(
+    input go,
     input clk,
     input[31:0] instruction,
     input instr_segv,
@@ -27,6 +28,15 @@ module controlpath(
   );
 
   reg[3:0] current_state, next_state;
+  localparam
+    HALT = 4'b0000,
+    START = 4'b1000,
+    READ_INS = 4'b1001,
+    DO = 4'b1101,
+    WAIT_D = 4'b0001,
+    RW = 4'b0011,
+    TRAP = 4'b1111;
+
   wire invalid_instruction;
   wire[2:0] alu_op, sl_op;
   wire[3:0] alu_a, sl_a;
@@ -42,6 +52,7 @@ module controlpath(
     op_select = instr_alu ? logic_select : sl_select;
     a_select = instr_alu ? alu_a : sl_a;
   end
+
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
     .instruction(instruction),
@@ -72,4 +83,33 @@ module controlpath(
     .sl_op(sl_op),
     .write(sl_write)
     );
+
+    always @(*)begin: state_table
+      case(current_state)
+        HALT: next_state = go ? START : HALT;
+        START: next_state = READ_INS;
+        READ_INS: begin
+          if(wait_instr)
+            next_state = READ_INS;
+          else begin
+            if(~instr_pc & ~instr_alu)
+              next_state = WAIT_D;
+            else
+              next_state = DO;
+          end
+        end
+        WAIT_D: next_state = wait_data ? WAIT_D : RW;
+        RW: next_state = READ_INS;
+        DO: next_state = READ_INS;
+      endcase
+    end
+
+    always @(posedge clk) begin
+      if(instr_segv | data_segv)
+        current_state <= TRAP;
+      else if(~go)
+        current_state <= HALT;
+      else
+        current_state <= next_state;
+    end
 endmodule
