@@ -7,7 +7,7 @@ module controlpath(
     input data_segv,
     input wait_instr,
     input wait_data,
-    output pc_inc,
+    output reg pc_inc,
     output reg[2:0] opcode,
     output alu_form,
     output[1:0] alu_vec_perci,
@@ -22,13 +22,23 @@ module controlpath(
     output[3:0] alu_Y2_select,
     output reg[1:0] reg_write,
     output reg[3:0] op_select,
-    output st,
-    output ld,
+    output reg st,
+    output reg ld,
     output[3:0] mem_loca_addr,
     output[3:0] reg_addr
   );
 
-  wire[4:0] current_state; //output of the modularized FSM
+  localparam
+    HALT = 5'b00000,
+    READ_INS = 5'b01000,
+    WAIT_LOAD = 5'b01010,
+    WAIT_STORE = 5'b01100,
+    DO = 5'b01001,
+    TRAP = 5'b10000;
+
+  //output of the modularized FSM
+  wire[4:0] current_state;
+
   reg invalid_instruction;
 
   //wire naming for the Operation mux
@@ -38,13 +48,23 @@ module controlpath(
   wire[3:0] logic_select, sl_select;
   wire instr_pc, instr_alu;
   wire invalid_alu_instruction, invalid_mmu_instruction;
-  //Operation Mux
+  //register naming for state dependant Op Mux
+  reg[1:0] reg_write_raw;
+  wire ld_raw, st_raw;
+
+  //Raw Operation Mux
   always @(*) begin
     opcode = instr_alu ? alu_op : sl_op;
-    reg_write = instr_alu ? alu_write : sl_write;
+    reg_write_raw = instr_alu ? alu_write : sl_write;
     op_select = instr_alu ? logic_select : sl_select;
     a_select = instr_alu ? alu_a : sl_a;
     invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
+  end
+  //State dependant operation Mux
+  always @(*) begin
+    {reg_write, pc_inc} = current_state == DO ? {reg_write_raw, 1'b1} : 3'b0;
+    ld = current_state == WAIT_LOAD ? ld_raw : 0;
+    st = current_state == WAIT_STORE ? st_raw : 0;
   end
 
   assign {instr_pc, instr_alu} = instruction[1:0];
@@ -74,8 +94,8 @@ module controlpath(
     .invalid_instruction(invalid_mmu_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
-    .st(st),
-    .ld(ld),
+    .st(st_raw),
+    .ld(ld_raw),
     .sl_select(sl_select),
     .sl_op(sl_op),
     .write(sl_write)
@@ -87,8 +107,8 @@ module controlpath(
     .halt(halt),
     .instr_alu(instr_alu),
     .instr_pc(instr_pc),
-    .ld(ld),
-    .st(st),
+    .ld(ld_raw),
+    .st(st_raw),
     .wait_data(wait_data),
     .wait_instr(wait_instr),
     .data_segv(data_segv),

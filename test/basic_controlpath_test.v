@@ -54,11 +54,17 @@ module basic_controlpath_test;
     .st(st)
     );
 
-  initial begin
-  $dumpfile("build/basic_controlpath_test.vcd");
-  $dumpvars;
+  always begin
+    clk = 1'b0; #1; clk = 1'b1; #1;
+  end
 
-  err = 0;
+  initial begin
+    $dumpfile("build/basic_controlpath_test.vcd");
+    $dumpvars;
+    err = 0;
+
+
+
 
     if (!err) begin
       $display("BASIC CONTROLPATH TEST: All good!"); end
