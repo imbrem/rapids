@@ -28,37 +28,31 @@ module controlpath(
     output[3:0] reg_addr
   );
 
-  reg[4:0] current_state, next_state;
-  localparam
-    HALT = 5'b00000,
-    READ_INS = 5'b01000,
-    WAIT_LOAD = 5'b01010,
-    WAIT_STORE = 5'b01100,
-    DO = 5'b01001,
-    TRAP = 5'b10000;
+  wire[4:0] current_state; //output of the modularized FSM
+  reg invalid_instruction;
 
-  wire invalid_instruction;
+  //wire naming for the Operation mux
   wire[2:0] alu_op, sl_op;
   wire[3:0] alu_a, sl_a;
   wire[1:0] alu_write, sl_write;
   wire[3:0] logic_select, sl_select;
   wire instr_pc, instr_alu;
-  wire trap;
-  assign {instr_pc, instr_alu} = instruction[1:0];
-  assign trap = data_segv | instr_segv | invalid_instruction;
-
-  //Mux between alu operations and memory operations.
+  wire invalid_alu_instruction, invalid_mmu_instruction;
+  //Operation Mux
   always @(*) begin
     opcode = instr_alu ? alu_op : sl_op;
     reg_write = instr_alu ? alu_write : sl_write;
     op_select = instr_alu ? logic_select : sl_select;
     a_select = instr_alu ? alu_a : sl_a;
+    invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
   end
+
+  assign {instr_pc, instr_alu} = instruction[1:0];
 
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
     .instruction(instruction),
-    .invalid_instruction(invalid_instruction),
+    .invalid_instruction(invalid_alu_instruction),
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
     .alu_form(alu_form),
@@ -77,7 +71,7 @@ module controlpath(
 
   mmu_decoder d1(
     .instruction(instruction[31:2]),
-    .invalid_instruction(invalid_instruction),
+    .invalid_instruction(invalid_mmu_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
     .st(st),
@@ -87,36 +81,20 @@ module controlpath(
     .write(sl_write)
     );
 
-    always @(*)begin: state_table
-      case(current_state)
-        HALT: next_state = go ? READ_INS : HALT;
-        READ_INS: begin
-          if(wait_instr)
-            next_state = READ_INS;
-          else begin
-            if(~instr_pc & ~instr_alu) begin
-              if(ld)
-                next_state = WAIT_LOAD;
-              else if(st)
-                next_state = WAIT_STORE;
-              end
-            else
-              next_state = DO;
-          end
-        end
-        WAIT_LOAD: next_state = data_segv ? TRAP : DO;
-        WAIT_STORE: next_state = data_segv ? TRAP : DO;
-        DO: begin
-          if(halt)
-            next_state = trap ? TRAP : READ_INS;
-          else
-            next_state = HALT;
-        end
-      endcase
-    end
+  FSM controlfsm(
+    .clk(clk),
+    .go(go),
+    .halt(halt),
+    .instr_alu(instr_alu),
+    .instr_pc(instr_pc),
+    .ld(ld),
+    .st(st),
+    .wait_data(wait_data),
+    .wait_instr(wait_instr),
+    .data_segv(data_segv),
+    .instr_segv(instr_segv),
+    .invalid_instruction(invalid_instruction),
+    .current_state(current_state)
+    );
 
-
-    always @(posedge clk) begin
-        current_state <= next_state;
-    end
 endmodule

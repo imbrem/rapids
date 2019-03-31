@@ -3,9 +3,10 @@ ALU_FILES = src/datapath/alu/alu.v \
 	src/datapath/alu/subtractor.v \
 	src/datapath/alu/logic_unit.v
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
-CONTROLPATH_FILES = src/controlpath/alu_instruction_decoder.v \
-	src/controlpath/mmu_decoder.v \
-	src/controlpath/controlpath.v
+DECODER_FILES = 	src/controlpath/mmu_decoder.v \
+src/controlpath/alu_instruction_decoder.v
+CONTROLPATH_FILES = src/controlpath/controlpath.v \
+	src/controlpath/FSM.v $(DECODER_FILES)
 MMU_FILES = src/memory/mmu.v
 ALL_FILES = src/rapids.v $(CONTROLPATH_FILES) $(DATAPATH_FILES) $(MMU_FILES)
 
@@ -15,7 +16,8 @@ all: build/meta_test build/alu_test \
 	build/basic_controlpath_test \
 	build/basic_rapids_test \
 	build/mmu_test \
-	build/logic_unit_test
+	build/logic_unit_test \
+	build/FSM_test
 
 test: build/meta_test.vcd \
 	build/alu_test.vcd \
@@ -24,7 +26,8 @@ test: build/meta_test.vcd \
 	build/basic_controlpath_test.vcd \
 	build/basic_rapids_test.vcd \
 	build/mmu_test.vcd \
-	build/logic_unit_test.vcd
+	build/logic_unit_test.vcd \
+	build/FSM_test.vcd
 
 build/meta_test.vcd: build/meta_test
 	vvp build/meta_test
@@ -50,6 +53,9 @@ build/mmu_test.vcd: build/mmu_test
 build/logic_unit_test.vcd: build/logic_unit_test
 	vvp build/logic_unit_test
 
+build/FSM_test.vcd: build/FSM_test
+	vvp build/FSM_test
+
 build/meta_test: test/meta_test.v
 	mkdir -p build
 	iverilog -o build/meta_test test/meta_test.v
@@ -63,10 +69,10 @@ build/basic_datapath_test: test/basic_datapath_test.v $(DATAPATH_FILES)
 	iverilog -o build/basic_datapath_test \
 		test/basic_datapath_test.v $(DATAPATH_FILES)
 
-build/alu_instruction_decoder_test: test/alu_instruction_decoder_test.v $(CONTROLPATH_FILES)
+build/alu_instruction_decoder_test: test/alu_instruction_decoder_test.v $(DECODER_FILES)
 	mkdir -p build
 	iverilog -o build/alu_instruction_decoder_test \
-		test/alu_instruction_decoder_test.v $(CONTROLPATH_FILES)
+		test/alu_instruction_decoder_test.v $(DECODER_FILES)
 
 build/basic_controlpath_test: test/basic_controlpath_test.v $(CONTROLPATH_FILES)
 	mkdir -p build
@@ -84,6 +90,10 @@ build/mmu_test: test/mmu_test.v $(MMU_FILES)
 build/logic_unit_test: test/logic_unit_test.v $(ALU_FILES)
 	mkdir -p build
 	iverilog -o build/logic_unit_test test/logic_unit_test.v $(ALU_FILES)
+
+build/FSM_test: test/FSM_test.v $(CONTROLPATH_FILES)
+	mkdir -p build
+	iverilog -o build/FSM_test test/FSM_test.v $(CONTROLPATH_FILES)
 
 clean:
 	rm -f build/*
