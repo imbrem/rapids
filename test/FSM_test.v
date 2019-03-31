@@ -35,6 +35,14 @@ module FSM_test;
     clk = 1'b0; #1; clk = 1'b1; #1;
   end
 
+  localparam
+    HALT = 5'b00000,
+    READ_INS = 5'b01000,
+    WAIT_LOAD = 5'b01010,
+    WAIT_STORE = 5'b01100,
+    DO = 5'b01001,
+    TRAP = 5'b10000;
+
   initial begin;
     $dumpfile("build/FSM_test.vcd");
     $dumpvars;
@@ -47,10 +55,37 @@ module FSM_test;
     ld = 0;
     st = 0;
     wait_data = 1;
-    wait_instr = 1;
+    wait_instr = 0;
     data_segv = 0;
     instr_segv = 0;
     invalid_instruction = 0;
+    #6
+    if(current_state != HALT) begin
+      $display(
+        "FSM TEST: initial condition test failed, expected 'HALT', got %",
+        current_state
+        );
+      err = 1;
+    end
+
+    go = 1;
+    #2;
+    if(current_state != READ_INS) begin
+      $display(
+        "FSM TEST: exiting halt test failed, expected 'READ_INS', got %",
+        current_state
+        );
+      err = 1;
+    end
+
+    #2
+    if(current_state != DO) begin
+      $display(
+        "FSM TEST: alu operation test failed, expected 'DO' got %",
+        current_state
+        );
+      err = 1;
+    end
 
     if (!err) begin
       $display("FSM TEST: All good!"); end
