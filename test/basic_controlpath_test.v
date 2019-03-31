@@ -58,13 +58,58 @@ module basic_controlpath_test;
     clk = 1'b0; #1; clk = 1'b1; #1;
   end
 
+  localparam
+    HALT = 5'b00000,
+    READ_INS = 5'b01000,
+    WAIT_LOAD = 5'b01010,
+    WAIT_STORE = 5'b01100,
+    DO = 5'b01001,
+    TRAP = 5'b10000;
+
   initial begin
     $dumpfile("build/basic_controlpath_test.vcd");
     $dumpvars;
     err = 0;
 
+    go = 0;
+    instruction = 32'h80801234;
+    data_segv = 0;
+    instr_segv = 0;
+    wait_data = 0;
+    wait_instr = 1;
+    #10
+    if(C.current_state != HALT) begin
+      $display(
+        "CONTROLPATH TEST: initial condition test failed, got %",
+        C.current_state
+        );
+      err = 1;
+    end
 
+    go = 1;
+    #2
+    if(C.current_state != READ_INS) begin
+      $display(
+        "CONTROLPATH TEST: read instruction loop test failed, got %",
+        C.current_state
+        );
+      err = 1;
+    end
 
+    wait_instr = 0;
+    #2
+    if(
+      C.current_state != DO |
+      a_select != 1 |
+      reg_write != 2'b11 |
+      const_c != 0
+      ) begin
+      $display(
+        "CONTROLPATH TEST: initial condition test failed, got %",
+        C.current_state
+        );
+      err = 1;
+    end
 
     if (!err) begin
       $display("BASIC CONTROLPATH TEST: All good!"); end

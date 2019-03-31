@@ -52,6 +52,8 @@ module controlpath(
   reg[1:0] reg_write_raw;
   wire ld_raw, st_raw;
 
+  assign {instr_alu, pc} = instruction[31:30];
+
   //Raw Operation Mux
   always @(*) begin
     opcode = instr_alu ? alu_op : sl_op;
@@ -66,8 +68,6 @@ module controlpath(
     ld = current_state == WAIT_LOAD ? ld_raw : 0;
     st = current_state == WAIT_STORE ? st_raw : 0;
   end
-
-  assign {instr_pc, instr_alu} = instruction[1:0];
 
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
@@ -90,7 +90,7 @@ module controlpath(
     );
 
   mmu_decoder d1(
-    .instruction(instruction[31:2]),
+    .instruction(instruction[29:0]),
     .invalid_instruction(invalid_mmu_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
