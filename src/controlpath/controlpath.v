@@ -1,5 +1,6 @@
 module controlpath(
     input go,
+    input halt,
     input clk,
     input[31:0] instruction,
     input instr_segv,
@@ -27,15 +28,14 @@ module controlpath(
     output[3:0] reg_addr
   );
 
-  reg[3:0] current_state, next_state;
+  reg[4:0] current_state, next_state;
   localparam
-    HALT = 4'b0000,
-    START = 4'b1000,
-    READ_INS = 4'b1001,
-    DO = 4'b1101,
-    WAIT_D = 4'b0001,
-    RW = 4'b0011,
-    TRAP = 4'b1111;
+    HALT = 5'b00000,
+    READ_INS = 5'b01000,
+    WAIT_LOAD = 5'b01010,
+    WAIT_STORE = 5'b01100,
+    DO = 5'b01001,
+    TRAP = 5'b10000;
 
   wire invalid_instruction;
   wire[2:0] alu_op, sl_op;
@@ -43,7 +43,9 @@ module controlpath(
   wire[1:0] alu_write, sl_write;
   wire[3:0] logic_select, sl_select;
   wire instr_pc, instr_alu;
+  wire trap;
   assign {instr_pc, instr_alu} = instruction[1:0];
+  assign trap = data_segv | instr_segv | invalid_instruction;
 
   //Mux between alu operations and memory operations.
   always @(*) begin
@@ -75,6 +77,7 @@ module controlpath(
 
   mmu_decoder d1(
     .instruction(instruction[31:2]),
+    .invalid_instruction(invalid_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
     .st(st),
@@ -86,30 +89,34 @@ module controlpath(
 
     always @(*)begin: state_table
       case(current_state)
-        HALT: next_state = go ? START : HALT;
-        START: next_state = READ_INS;
+        HALT: next_state = go ? READ_INS : HALT;
         READ_INS: begin
           if(wait_instr)
             next_state = READ_INS;
           else begin
-            if(~instr_pc & ~instr_alu)
-              next_state = WAIT_D;
+            if(~instr_pc & ~instr_alu) begin
+              if(ld)
+                next_state = WAIT_LOAD;
+              else if(st)
+                next_state = WAIT_STORE;
+              end
             else
               next_state = DO;
           end
         end
-        WAIT_D: next_state = wait_data ? WAIT_D : RW;
-        RW: next_state = READ_INS;
-        DO: next_state = READ_INS;
+        WAIT_LOAD: next_state = data_segv ? TRAP : DO;
+        WAIT_STORE: next_state = data_segv ? TRAP : DO;
+        DO: begin
+          if(halt)
+            next_state = trap ? TRAP : READ_INS;
+          else
+            next_state = HALT;
+        end
       endcase
     end
 
+
     always @(posedge clk) begin
-      if(instr_segv | data_segv)
-        current_state <= TRAP;
-      else if(~go)
-        current_state <= HALT;
-      else
         current_state <= next_state;
     end
 endmodule

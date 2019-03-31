@@ -1,5 +1,6 @@
 module mmu_decoder(
   input[29:0] instruction,
+  output invalid_instruction,
   output[3:0] reg_addr,
   output[3:0] mem_loca_addr,
   output st,
@@ -16,4 +17,7 @@ module mmu_decoder(
     else if(st)
       write = 2'b00;
   end
+
+  assign invalid_instruction = ~(st | ld);
+
 endmodule
