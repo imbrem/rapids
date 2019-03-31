@@ -1,11 +1,11 @@
 ALU_FILES = src/datapath/alu/alu.v \
-	src/datapath/alu/adder.v \
-	src/datapath/alu/subtractor.v \
-	src/datapath/alu/logic_unit.v \
-	src/datapath/alu/comparetor.v
+	src/datapath/alu/alu_modules/adder.v \
+	src/datapath/alu/alu_modules/subtractor.v \
+	src/datapath/alu/alu_modules/logic_unit.v \
+	src/datapath/alu/alu_modules/comparetor.v
 DATAPATH_FILES = src/datapath/datapath.v $(ALU_FILES)
-DECODER_FILES = 	src/controlpath/mmu_decoder.v \
-src/controlpath/alu_instruction_decoder.v
+DECODER_FILES = 	src/controlpath/decoders/mmu_decoder.v \
+src/controlpath/decoders/alu_instruction_decoder.v
 CONTROLPATH_FILES = src/controlpath/controlpath.v \
 	src/controlpath/FSM.v $(DECODER_FILES)
 MMU_FILES = src/memory/mmu.v
