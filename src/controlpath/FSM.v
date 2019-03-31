@@ -33,7 +33,7 @@ module FSM(
         if(wait_instr)
           next_state = READ_INS;
         else begin
-          if(~instr_pc & ~instr_alu) begin
+          if(instr_pc & ~instr_alu) begin
             if(ld)
               next_state = WAIT_LOAD;
             else if(st)

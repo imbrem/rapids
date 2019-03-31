@@ -22,6 +22,8 @@ module controlpath(
     output[3:0] alu_Y2_select,
     output reg[1:0] reg_write,
     output reg[3:0] op_select,
+    output condition,
+    output[2:0] compare_op,
     output reg st,
     output reg ld,
     output[3:0] mem_loca_addr,
@@ -52,7 +54,7 @@ module controlpath(
   reg[1:0] reg_write_raw;
   wire ld_raw, st_raw;
 
-  assign {instr_alu, pc} = instruction[31:30];
+  assign {instr_alu, instr_pc} = instruction[31:30];
 
   //Raw Operation Mux
   always @(*) begin
@@ -64,7 +66,7 @@ module controlpath(
   end
   //State dependant operation Mux
   always @(*) begin
-    {reg_write, pc_inc} = current_state == DO ? {reg_write_raw, 1'b1} : 3'b0;
+    {reg_write, pc_inc} = current_state == DO ? {reg_write_raw, instr_pc} : 3'b0;
     ld = current_state == WAIT_LOAD ? ld_raw : 0;
     st = current_state == WAIT_STORE ? st_raw : 0;
   end
@@ -76,7 +78,6 @@ module controlpath(
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
     .alu_form(alu_form),
-    .alu_config(alu_config),
     .const_c(const_c),
     .constant(constant),
     .alu_a_select(alu_a),
@@ -86,7 +87,9 @@ module controlpath(
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .logic_select(logic_select),
-    .alu_write(alu_write)
+    .alu_write(alu_write),
+    .condition(condition),
+    .compare_op(compare_op)
     );
 
   mmu_decoder d1(

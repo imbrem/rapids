@@ -17,6 +17,8 @@ module alu_instruction_decoder_test;
   wire[3:0] alu_Y1_select;
   wire[3:0] alu_Y2_select;
   wire[3:0] logic_select;
+  wire condition;
+  wire compare_op;
 
   alu_instruction_decoder d(
     .instruction(instruction),
@@ -24,7 +26,6 @@ module alu_instruction_decoder_test;
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
     .alu_form(alu_form),
-    .alu_config(alu_config),
     .const_c(const_c),
     .constant(constant),
     .alu_a_select(alu_a_select),
@@ -34,7 +35,9 @@ module alu_instruction_decoder_test;
     .alu_Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .alu_write(alu_write),
-    .logic_select(logic_select)
+    .logic_select(logic_select),
+    .condition(condition),
+    .compare_op(compare_op)
     );
 
   initial begin

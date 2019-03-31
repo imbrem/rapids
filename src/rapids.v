@@ -2,6 +2,7 @@ module rapids(clk);
   input clk;
 
   wire[31:0] instruction;
+  wire[31:0] program_counter;
 
   wire pc_inc;
   wire[2:0] alu_op;
@@ -19,7 +20,8 @@ module rapids(clk);
   wire[3:0] alu_Y2_select;
   wire[1:0] alu_write;
   wire[3:0] logic_select;
-  wire[31:0] program_counter;
+  wire condition;
+  wire[2:0] compare_op;
 
   wire[3:0] mem_loca_addr;
   wire[31:0] mem_loca;
@@ -35,13 +37,13 @@ module rapids(clk);
 
   controlpath C(
     .clk(clk),
+    .pc_inc(pc_inc),
     .go(go),
     .instruction(instruction),
     .instr_segv(instr_segv),
     .data_segv(data_segv),
     .wait_instr(wait_instr),
     .wait_data(wait_data),
-    .pc_inc(pc_inc),
     .opcode(alu_op),
     .alu_form(alu_form),
     .alu_vec_perci(alu_vec_perci),
@@ -56,6 +58,8 @@ module rapids(clk);
     .alu_Y2_select(alu_Y2_select),
     .reg_write(alu_write),
     .op_select(logic_select),
+    .condition(condition),
+    .compare_op(compare_op),
     .st(st),
     .ld(ld),
     .mem_loca_addr(mem_loca_addr),
@@ -64,6 +68,7 @@ module rapids(clk);
 
   datapath D(
     .clk(clk),
+    .pc_inc(pc_inc),
     .alu_op(alu_op),
     .form(alu_form),
     .vec(alu_vec_perci),
@@ -76,9 +81,10 @@ module rapids(clk);
     .Y2(alu_Y2_select),
     .write(alu_write),
     .const_c(const_c),
-    .pc_inc(pc_inc),
     .constant(constant),
     .logic_select(logic_select),
+    .condition(condition),
+    .compare_op(compare_op),
     .mem_loca_addr(mem_loca_addr),
     .reg_addr(reg_addr),
     .ld(ld),

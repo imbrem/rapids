@@ -2,6 +2,7 @@ module basic_datapath_test;
   reg err;
 
   reg clk;
+  reg pc_inc;
   reg[2:0] op;
   reg form;
   reg[1:0] vec;
@@ -13,8 +14,9 @@ module basic_datapath_test;
   reg[1:0] write;
   reg const_c;
   reg[31:0] constant;
-  reg pc_inc;
   reg[3:0] logic_select;
+  reg condition;
+  reg[2:0] compare_op;
   reg[3:0] mem_loca_addr;
   reg[31:0] ld_data;
   reg ld;
@@ -53,7 +55,9 @@ module basic_datapath_test;
     .ld(ld),
     .st_data(st_data),
     .program_counter(program_counter),
-    .mem_loca(mem_loca)
+    .mem_loca(mem_loca),
+    .condition(condition),
+    .compare_op(compare_op)
     );
 
   always begin
@@ -81,6 +85,8 @@ module basic_datapath_test;
     constant = 5;
     mem_loca_addr = 0;
     ld_data = 0;
+    condition = 0;
+    compare_op = 0;
     #2;
 
     if(datapath.registers[1] !== 5) begin

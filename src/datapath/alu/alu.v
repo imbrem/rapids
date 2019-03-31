@@ -9,7 +9,7 @@
 //  <=FULL: Y1 = A - C, Y2 = B - D OR (Y1, Y2) = A - C - B
 //  DOUBLE: (Y1, Y2) = (A, B) - (C, D)
 
-module ALU(clk, op, form, vec, A, B, C, D, Y1, Y2, logic_select);
+module ALU(clk, op, form, vec, A, B, C, D, Y1, Y2, logic_select, compare_res);
   input clk;
   input[2:0] op; // The base operation
   input form; // Whether to, if applicable, use the first or second form of an op
@@ -17,6 +17,7 @@ module ALU(clk, op, form, vec, A, B, C, D, Y1, Y2, logic_select);
   input[31:0] A, B, C, D; // Input registers
   input[3:0] logic_select;
   output reg[31:0] Y1, Y2; // Output registers
+  output[7:0] compare_res;
 
   wire[31:0] add_Y1, add_Y2;
   wire[31:0] sub_Y1, sub_Y2;
@@ -44,6 +45,8 @@ module ALU(clk, op, form, vec, A, B, C, D, Y1, Y2, logic_select);
     .logic_neg(form), .logic_select(logic_select), .logic_op(op),
     .A(A), .B(B), .C(C), .D(D), .Y1(logic_Y1), .Y2(logic_Y2)
     );
+
+  comparetor comparetor (.res(compare_res), .V1(B), .V2(D));
 
   always @(*) begin
     case (op)

@@ -1,5 +1,7 @@
 module datapath(
   input clk,
+  input pc_inc,
+  //alu
   input[2:0] alu_op,
   input form,
   input[1:0] vec,
@@ -11,16 +13,20 @@ module datapath(
   input[3:0] Y1, Y2,
   input[1:0] write,
   input const_c,
-  input pc_inc,
   input[31:0] constant,
   input[3:0] logic_select,
+  //condition
+  input condition,
+  input[2:0] compare_op,
+  //load and store
   input[3:0] mem_loca_addr,
   input[3:0] reg_addr,
   input ld,
   input[31:0] ld_data,
   output[31:0] st_data,
-  output[31:0] program_counter,
-  output[31:0] mem_loca
+  output[31:0] mem_loca,
+  //the program counter
+  output[31:0] program_counter
 );
 
   wire[31:0] v_Y1, v_Y2;
@@ -29,6 +35,8 @@ module datapath(
   wire[31:0] v_B;
   reg[31:0] v_C;
   wire[31:0] v_D;
+  reg w_Y1, w_Y2;
+  wire[7:0] compare_res;
 
   reg[31:0] registers[15:0];
   wire[31:0] register_view[15:0];
@@ -44,6 +52,7 @@ module datapath(
   assign program_counter = registers[0];
   assign v_A = register_view[A];
   assign v_B = register_view[B];
+  assign v_D = register_view[D];
   always @(*) begin
     if(const_c)
       v_C = constant;
@@ -52,14 +61,22 @@ module datapath(
     else
       v_C = register_view[C];
   end
-  assign v_D = register_view[D];
-  assign w_Y1 = write[0] & ~(pc_inc & (Y1 == 0));
-  assign w_Y2 = write[1] & ~(pc_inc & (Y2 == 0));
+
+  //condition
+  always @(*) begin
+    if(~condition) begin
+      w_Y1 = write[0] & ~(pc_inc & Y1 == 0);
+      w_Y2 = write[1] & ~(pc_inc & Y2 == 0);
+    end else begin
+      w_Y1 = write[0] & compare_res[compare_op];
+      w_Y2 = 0;
+    end
+  end
 
   ALU alu(
     .op(alu_op), .form(form), .vec(vec),
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
-    .logic_select(logic_select));
+    .logic_select(logic_select), .compare_res(compare_res));
 
   always @(posedge clk) begin
     if(w_Y1) begin
