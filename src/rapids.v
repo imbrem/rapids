@@ -1,5 +1,8 @@
-module rapids(clk);
+module rapids(clk, go, halt, reset_n);
   input clk;
+  input go;
+  input halt;
+  input reset_n;
 
   wire[31:0] instruction;
   wire[31:0] program_counter;
@@ -37,8 +40,10 @@ module rapids(clk);
 
   controlpath C(
     .clk(clk),
+    .reset_n(reset_n),
     .pc_inc(pc_inc),
     .go(go),
+    .halt(halt),
     .instruction(instruction),
     .instr_segv(instr_segv),
     .data_segv(data_segv),
@@ -68,6 +73,7 @@ module rapids(clk);
 
   datapath D(
     .clk(clk),
+    .reset_n(reset_n),
     .pc_inc(pc_inc),
     .alu_op(alu_op),
     .form(alu_form),
@@ -96,6 +102,7 @@ module rapids(clk);
 
   MMU mmu(
     .clk(clk),
+    .reset_n(reset_n),
     .instr_addr(program_counter),
     .data_addr(mem_loca),
     .data_in(st_data),

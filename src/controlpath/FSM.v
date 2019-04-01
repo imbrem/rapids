@@ -1,5 +1,6 @@
 module FSM(
   input clk,
+  input reset_n,
   input go,
   input halt,
   input instr_alu,
@@ -56,6 +57,9 @@ module FSM(
   end
 
   always @(posedge clk) begin
-    current_state <= next_state;
+    if(reset_n)
+      current_state <= HALT;
+    else
+      current_state <= next_state;
   end
 endmodule

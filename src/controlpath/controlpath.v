@@ -2,6 +2,7 @@ module controlpath(
     input go,
     input halt,
     input clk,
+    input reset_n,
     input[31:0] instruction,
     input instr_segv,
     input data_segv,
@@ -40,7 +41,7 @@ module controlpath(
 
   //output of the modularized FSM
   wire[4:0] current_state;
-  reg[31:0] backup_instr;
+  reg[31:0] instr_reg;
   reg invalid_instruction;
 
   //wire naming for the Operation mux
@@ -58,27 +59,37 @@ module controlpath(
 
   //Raw Operation Mux
   always @(*) begin
-    opcode = instr_alu ? alu_op : sl_op;
-    reg_write_raw = instr_alu ? alu_write : sl_write;
-    op_select = instr_alu ? logic_select : sl_select;
-    a_select = instr_alu ? alu_a : sl_a;
-    invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
+    if (reset_n) begin
+      {opcode, reg_write_raw, op_select, a_select, invalid_instruction} = 0;
+    end else begin
+      opcode = instr_alu ? alu_op : sl_op;
+      reg_write_raw = instr_alu ? alu_write : sl_write;
+      op_select = instr_alu ? logic_select : sl_select;
+      a_select = instr_alu ? alu_a : sl_a;
+      invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
+    end
   end
   //State dependant operation Mux
   always @(*) begin
-    {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, instr_pc} : 3'b0;
-    ld = current_state == WAIT_LOAD ? ld_raw : 0;
-    st = current_state == WAIT_STORE ? st_raw : 0;
+    if(reset_n) begin
+      {reg_write, pc_inc, ld, st} = 0;
+    end else begin
+      {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, instr_pc} : 3'b0;
+      ld = current_state == WAIT_LOAD ? ld_raw : 0;
+      st = current_state == WAIT_STORE ? st_raw : 0;
+    end
   end
 
   //instruction backup
   always @(posedge clk) begin
-    if(current_state == READ_INS)
-      backup_instr <= instruction;
+    if(reset_n)
+      instr_reg <= 32'b0;
+    else if(current_state == READ_INS)
+      instr_reg <= instruction;
   end
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
-    .instruction(instruction),
+    .instruction(instr_reg),
     .invalid_instruction(invalid_alu_instruction),
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
@@ -98,7 +109,7 @@ module controlpath(
     );
 
   mmu_decoder d1(
-    .instruction(instruction[29:0]),
+    .instruction(instr_reg[29:0]),
     .invalid_instruction(invalid_mmu_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
@@ -111,6 +122,7 @@ module controlpath(
 
   FSM controlfsm(
     .clk(clk),
+    .reset_n(reset_n),
     .go(go),
     .halt(halt),
     .instr_alu(instr_alu),

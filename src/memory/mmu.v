@@ -6,6 +6,7 @@
 
 module MMU(
   input clk, // The clk
+  input reset_n,
   input[31:0] instr_addr, // Instruction address
   input[31:0] data_addr, // Data address
   input[31:0] data_in, // Data to write
@@ -36,6 +37,22 @@ module MMU(
 
   assign wait_data = 1'b0;
   assign wait_instr = 1'b0;
+
+  //reset entire memory
+
+  genvar i;
+  for(i = 0; i < 128; i = i + 1) begin : reset_memory
+  always @(reset_n) begin
+    if(reset_n) memory[i] = 32'b0;
+  end
+  end
+  genvar j;
+  for(j = 0; j < 15; j = j + 1) begin : reset_special_memory
+    always @(reset_n) begin
+      if(reset_n) special[j] = 32'b0;
+    end
+  end
+
 
   always@(posedge clk) begin
     if(data_segv) begin

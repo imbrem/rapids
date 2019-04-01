@@ -1,6 +1,7 @@
 module datapath(
   input clk,
   input pc_inc,
+  input reset_n,
   //alu
   input[2:0] alu_op,
   input form,
@@ -42,6 +43,13 @@ module datapath(
   wire[31:0] register_view[15:0];
 
   assign st_data = register_view[reg_addr];
+
+  genvar j;
+  for(i = 1; i < 16; i = i + 1) begin : register_reset
+    always @(reset_n) begin
+      if(reset_n) registers[i] = 0;
+    end
+  end
 
   genvar i;
   assign register_view[0] = pc_inc ? 32'b0 : registers[0];
