@@ -40,7 +40,7 @@ module controlpath(
 
   //output of the modularized FSM
   wire[4:0] current_state;
-
+  reg[31:0] backup_instr;
   reg invalid_instruction;
 
   //wire naming for the Operation mux
@@ -66,11 +66,16 @@ module controlpath(
   end
   //State dependant operation Mux
   always @(*) begin
-    {reg_write, pc_inc} = current_state == DO ? {reg_write_raw, instr_pc} : 3'b0;
+    {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, instr_pc} : 3'b0;
     ld = current_state == WAIT_LOAD ? ld_raw : 0;
     st = current_state == WAIT_STORE ? st_raw : 0;
   end
 
+  //instruction backup
+  always @(posedge clk) begin
+    if(current_state == READ_INS)
+      backup_instr <= instruction;
+  end
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
     .instruction(instruction),
