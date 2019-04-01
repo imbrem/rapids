@@ -1,3 +1,5 @@
+`define initial_addr 32'd16
+
 module rapids(clk, go, halt, reset_n);
   input clk;
   input go;

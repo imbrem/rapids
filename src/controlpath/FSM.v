@@ -55,11 +55,12 @@ module FSM(
       default: next_state = HALT;
     endcase
   end
+  //reset block
+  always @(posedge reset_n) begin
+    current_state = HALT;
+  end
 
   always @(posedge clk) begin
-    if(reset_n)
-      current_state <= HALT;
-    else
       current_state <= next_state;
   end
 endmodule

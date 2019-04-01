@@ -1,3 +1,5 @@
+`define initial_addr 32'd16
+
 module datapath(
   input clk,
   input pc_inc,
@@ -44,11 +46,16 @@ module datapath(
 
   assign st_data = register_view[reg_addr];
 
+  //reset block
   genvar j;
-  for(i = 1; i < 16; i = i + 1) begin : register_reset
-    always @(reset_n) begin
-      if(reset_n) registers[i] = 0;
+  for(j = 1; j < 16; j = j + 1) begin : register_reset
+    always @(posedge reset_n) begin
+      registers[j] = 0;
     end
+  end
+  //for test purpose only, modify after
+  always @(posedge reset_n) begin
+    registers[0] = `initial_addr;
   end
 
   genvar i;

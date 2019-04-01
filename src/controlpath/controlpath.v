@@ -59,32 +59,29 @@ module controlpath(
 
   //Raw Operation Mux
   always @(*) begin
-    if (reset_n) begin
-      {opcode, reg_write_raw, op_select, a_select, invalid_instruction} = 0;
-    end else begin
-      opcode = instr_alu ? alu_op : sl_op;
-      reg_write_raw = instr_alu ? alu_write : sl_write;
-      op_select = instr_alu ? logic_select : sl_select;
-      a_select = instr_alu ? alu_a : sl_a;
-      invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
-    end
+    opcode = instr_alu ? alu_op : sl_op;
+    reg_write_raw = instr_alu ? alu_write : sl_write;
+    op_select = instr_alu ? logic_select : sl_select;
+    a_select = instr_alu ? alu_a : sl_a;
+    invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
   end
   //State dependant operation Mux
   always @(*) begin
-    if(reset_n) begin
-      {reg_write, pc_inc, ld, st} = 0;
-    end else begin
-      {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, instr_pc} : 3'b0;
-      ld = current_state == WAIT_LOAD ? ld_raw : 0;
-      st = current_state == WAIT_STORE ? st_raw : 0;
-    end
+    {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, ~instr_pc} : 3'b0;
+    ld = current_state == WAIT_LOAD ? ld_raw : 0;
+    st = current_state == WAIT_STORE ? st_raw : 0;
   end
 
-  //instruction backup
+  //initial reset
+  initial begin
+    {opcode, reg_write_raw, op_select, a_select, invalid_instruction} = 0;
+    instr_reg <= 32'b0;
+    {reg_write, pc_inc, ld, st} = 0;
+  end
+
+  //instruction store
   always @(posedge clk) begin
-    if(reset_n)
-      instr_reg <= 32'b0;
-    else if(current_state == READ_INS)
+    if(current_state == READ_INS)
       instr_reg <= instruction;
   end
   //controlpath needs mux for different type of operations ie. PC

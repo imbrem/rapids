@@ -27,32 +27,31 @@ module MMU(
   wire[6:0] t_data_addr = (data_addr - 16);
   wire[3:0] s_data_addr = (data_addr - 1);
 
-  wire instr_special = t_instr_addr < 16;
-  wire data_special = t_data_addr < 16;
+  wire init_instr = instr_addr == 0;
+  wire instr_special = instr_addr < 16 & instr_addr != 0;
+  wire data_special = data_addr < 16;
   wire instr_too_high = t_instr_addr >= 128;
   wire data_too_high = t_data_addr >= 128;
 
-  assign instr_segv = (instr_addr == 0) | instr_too_high | instr_special;
+  assign instr_segv = instr_too_high | instr_special;
   assign data_segv = (data_addr == 0) | data_too_high;
 
   assign wait_data = 1'b0;
   assign wait_instr = 1'b0;
 
   //reset entire memory
-
   genvar i;
   for(i = 0; i < 128; i = i + 1) begin : reset_memory
-  always @(reset_n) begin
-    if(reset_n) memory[i] = 32'b0;
-  end
-  end
-  genvar j;
-  for(j = 0; j < 15; j = j + 1) begin : reset_special_memory
-    always @(reset_n) begin
-      if(reset_n) special[j] = 32'b0;
+    initial begin
+      memory[i] = 32'b0;
     end
   end
-
+  genvar j;
+  for(j = 1; j < 15; j = j + 1) begin : reset_special_memory
+    always @(posedge reset_n) begin
+      special[j] = 32'b0;
+    end
+  end
 
   always@(posedge clk) begin
     if(data_segv) begin
@@ -72,7 +71,10 @@ module MMU(
       instr = 32'hXXXXXXXX;
     end
     else begin
-      instr = memory[t_instr_addr];
+      if (init_instr) begin
+        instr = memory[instr_addr];
+      end
+      else instr = memory[t_instr_addr];
     end
   end
 

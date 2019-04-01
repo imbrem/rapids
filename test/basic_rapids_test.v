@@ -19,9 +19,9 @@ module basic_rapids_test;
 
     go = 0;
     halt = 0;
-    rapids.mmu.memory[0] = 32'h9E010004;
-    rapids.mmu.memory[1] = 32'h9E020006;
-    rapids.mmu.memory[2] = 32'h80801020;
+    rapids.mmu.memory[0] = 32'hDE010004;
+    rapids.mmu.memory[1] = 32'hDE020006;
+    rapids.mmu.memory[2] = 32'hD0801020;
     rapids.D.registers[0] = 32'd16;
     #10;
     go = 1;
