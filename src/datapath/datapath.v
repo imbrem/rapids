@@ -74,7 +74,7 @@ module datapath(
   end
 
   ALU alu(
-    .op(alu_op), .form(form), .vec(vec),
+    .op(alu_op), .form(form), .vec(vec), .shift_add(const_c),
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
     .logic_select(logic_select), .compare_res(compare_res));
 

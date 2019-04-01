@@ -18,7 +18,7 @@ module alu_instruction_decoder_test;
   wire[3:0] alu_Y2_select;
   wire[3:0] logic_select;
   wire condition;
-  wire compare_op;
+  wire[2:0] compare_op;
 
   alu_instruction_decoder d(
     .instruction(instruction),
@@ -64,7 +64,9 @@ module alu_instruction_decoder_test;
         alu_Y1_select != 4'h1 |
         alu_Y2_select != 4'h2
       )begin
-        $display("ALU INSTRUCTION DECODER TEST: none-vector addition 4 form test failed, got ");
+        $display("ALU INSTRUCTION DECODER TEST: none-vector addition 4 form test failed, got %d",
+        alu_write
+        );
         err = 1;
     end
 
@@ -79,13 +81,13 @@ module alu_instruction_decoder_test;
         constant != 32'h0800 |
         alu_write != 2'b01 |
         alu_a_select != 4'h1 |
-        alu_b_select != 4'h0 |
+        alu_b_select != 4'h8 |
         alu_c_select != 4'h0 |
         alu_d_select != 4'h0 |
         alu_Y1_select != 4'h1 |
-        alu_Y2_select != 4'h0
+        alu_Y2_select != 4'h8
       )begin
-        $display("ALU INSTRUCTION DECODER TEST: none-vector constant addition 4 form test failed, got %d", constant);
+        $display("ALU INSTRUCTION DECODER TEST: none-vector constant addition 4 form test failed, got %d", alu_write);
         err = 1;
     end
 
