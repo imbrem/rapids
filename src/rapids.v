@@ -1,8 +1,13 @@
-module rapids(clk, go, halt, reset_n);
+module rapids(clk, go, halt, reset_n, vga_x, vga_y, vga_color, vga_plot);
   input clk;
   input go;
   input halt;
   input reset_n;
+
+  output[8:0] vga_x;
+  output[7:0] vga_y;
+  output[23:0] vga_color;
+  output vga_plot;
 
   wire[31:0] instruction;
   wire[31:0] program_counter;
@@ -112,7 +117,11 @@ module rapids(clk, go, halt, reset_n);
     .wait_instr(wait_instr),
     .wait_data(wait_data),
     .instr_segv(instr_segv),
-    .data_segv(data_segv)
+    .data_segv(data_segv),
+    .vga_x(vga_x),
+    .vga_y(vga_y),
+    .vga_color(vga_color),
+    .vga_plot(vga_plot)
     );
 
 endmodule
