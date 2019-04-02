@@ -4,6 +4,7 @@ module datapath(
   input clk,
   input pc_inc,
   input reset_n,
+  input jump,
   //alu
   input[2:0] alu_op,
   input form,
@@ -58,7 +59,7 @@ module datapath(
   end
 
   genvar i;
-  assign register_view[0] = condition & ~pc_inc ? registers[0] : 32'b0;
+  assign register_view[0] = jump ? registers[0] : 32'b0;
   for(i = 1; i < 16; i = i + 1) begin : register_view_assignment
     assign register_view[i] = registers[i];
   end

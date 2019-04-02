@@ -4,27 +4,31 @@ module controlpath(
     input clk,
     input reset_n,
     input[31:0] instruction,
+    //inputs from mmu
     input instr_segv,
     input data_segv,
     input wait_instr,
     input wait_data,
     output reg pc_inc,
+    output jump,
+    //control signals for alu
     output reg[2:0] opcode,
     output reg form,
     output[1:0] alu_vec_perci,
     output[3:0] alu_config,
     output reg const_c,
     output[31:0] constant,
-    output reg[3:0] a_select,
+    output reg[3:0] a_select, //*
     output[3:0] alu_b_select,
     output[3:0] alu_c_select,
     output[3:0] alu_d_select,
     output reg[3:0] Y1_select,
     output[3:0] alu_Y2_select,
-    output reg[1:0] reg_write,
-    output reg[3:0] op_select,
+    output reg[1:0] reg_write, //*
+    output reg[3:0] op_select, //*
     output reg condition,
     output[2:0] compare_op,
+    //control signals for mmu
     output reg st,
     output reg ld,
     output[3:0] mem_loca_addr
@@ -42,10 +46,17 @@ module controlpath(
   //10  ARITHMETIC
   //11  JUMP
 
-  //output of the modularized FSM
+  //General wire declariation
   wire[4:0] current_state;
   reg[31:0] instr_reg;
   reg invalid_instruction;
+  wire instr_pc, instr_alu;
+  wire reg_instr_alu, reg_instr_pc;
+  //General assignments
+  assign {reg_instr_alu, reg_instr_pc} = instr_reg[31:30];
+  assign {instr_alu, instr_pc} = instruction[31:30];
+  assign jump = reg_instr_pc & reg_instr_alu;
+
 
   //wire naming for the Operation mux
   wire[2:0] alu_op, sl_op;
@@ -53,18 +64,13 @@ module controlpath(
   wire[3:0] alu_Y1_select;
   wire[1:0] alu_write, sl_write;
   wire[3:0] logic_select, sl_select;
-  wire instr_pc, instr_alu;
-  wire reg_instr_alu, reg_instr_pc;
   wire alu_form, sl_neg;
   wire alu_const_c, sl_const_c;
   wire alu_condition, sl_condition;
   wire invalid_alu_instruction, invalid_mmu_instruction;
-  //register naming for state dependant Op Mux
+  //wire naming for state dependant Op Mux
   reg[1:0] reg_write_raw;
   wire ld_raw, st_raw;
-
-  assign {reg_instr_alu, reg_instr_pc} = instr_reg[31:30];
-  assign {instr_alu, instr_pc} = instruction[31:30];
 
   //Raw Operation Mux
   always @(*) begin

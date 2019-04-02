@@ -71,7 +71,7 @@ module alu_instruction_decoder_test;
     end
 
     //Try constant operation 256
-    instruction = 32'h10810800;
+    instruction = 32'h90810800;
     #1;
     if(
         alu_op != 3'b000 |

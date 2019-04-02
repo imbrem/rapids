@@ -33,6 +33,8 @@ module basic_rapids_test;
     rapids.mmu.memory[5] = 32'h143F0000;//Load memory[64] to reg[4]
     #4;
     go = 1;
+    #2;
+    go = 0;
     #40;
 
     if(rapids.D.registers[1] != 10) begin

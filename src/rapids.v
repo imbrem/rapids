@@ -8,6 +8,8 @@ module rapids(clk, go, halt, reset_n);
   wire[31:0] program_counter;
 
   wire pc_inc;
+  wire jump;
+
   wire[2:0] alu_op;
   wire[1:0] alu_vec_perci;
   wire alu_form;
@@ -40,6 +42,7 @@ module rapids(clk, go, halt, reset_n);
     .clk(clk),
     .reset_n(reset_n),
     .pc_inc(pc_inc),
+    .jump(jump),
     .go(go),
     .halt(halt),
     .instruction(instruction),
@@ -72,6 +75,7 @@ module rapids(clk, go, halt, reset_n);
     .clk(clk),
     .reset_n(reset_n),
     .pc_inc(pc_inc),
+    .jump(jump),
     .alu_op(alu_op),
     .form(form),
     .vec(alu_vec_perci),
