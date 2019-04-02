@@ -31,11 +31,13 @@ module basic_rapids_test;
     rapids.mmu.memory[3] = 32'h9EF30040;//copy addr 64 to reg[3]
     rapids.mmu.memory[4] = 32'h213F0000;//Store reg[1] to addr in reg[3] select all
     rapids.mmu.memory[5] = 32'h143F0000;//Load memory[64] to reg[4]
+    rapids.mmu.memory[6] = 32'hD0800010;
+    rapids.mmu.memory[22] = 32'hC0800010;
     #4;
     go = 1;
     #2;
     go = 0;
-    #40;
+    #50;
 
     if(rapids.D.registers[1] != 10) begin
       $display("BASIC RAPIDS TEST: basic arithemetic program test failed, expected 10 got %d",
