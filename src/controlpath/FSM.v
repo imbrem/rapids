@@ -16,7 +16,8 @@ module FSM(
   );
 
   wire trap;
-  assign trap = data_segv | instr_segv | invalid_instruction;
+  wire ld_st = (current_state == WAIT_LOAD | current_state == WAIT_STORE);
+  assign trap = (data_segv | instr_segv) & ld_st | invalid_instruction;
 
   reg[4:0]  next_state;
   localparam
@@ -34,12 +35,14 @@ module FSM(
         if(wait_instr)
           next_state = READ_INS;
         else begin
-          if(instr_pc & ~instr_alu) begin
+          if(~instr_pc & ~instr_alu) begin
             if(ld)
               next_state = WAIT_LOAD;
             else if(st)
               next_state = WAIT_STORE;
-            end
+            else
+              next_state = HALT;
+          end
           else
             next_state = DO;
         end

@@ -59,7 +59,7 @@ module datapath(
   end
 
   genvar i;
-  assign register_view[0] = pc_inc ? 32'b0 : registers[0];
+  assign register_view[0] = ~condition ? 32'b0 : registers[0];
   for(i = 1; i < 16; i = i + 1) begin : register_view_assignment
     assign register_view[i] = registers[i];
   end
@@ -76,6 +76,7 @@ module datapath(
     else
       v_C = register_view[C];
   end
+  assign mem_loca = register_view[mem_loca_addr];
 
   //condition
   always @(*) begin

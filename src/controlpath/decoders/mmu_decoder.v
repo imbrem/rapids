@@ -10,7 +10,6 @@ module mmu_decoder(
   output reg[1:0] write
   );
   assign {st, ld, reg_addr, mem_loca_addr, st_select} = instruction[29:16];
-  assign {st_select, mem_loca_addr, reg_addr, ld, st} = instruction[13:0];
   assign sl_op = 3'b111;
   always @(*) begin
     if(ld)

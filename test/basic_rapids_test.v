@@ -4,8 +4,9 @@ module basic_rapids_test;
   reg clk;
   reg go;
   reg halt;
+  reg reset_n;
 
-  rapids rapids(.clk(clk), .go(go), .halt(halt));
+  rapids rapids(.clk(clk), .go(go), .halt(halt), .reset_n(reset_n));
 
   always begin
     clk = 1'b0; #1; clk = 1'b1; #1;
@@ -16,16 +17,26 @@ module basic_rapids_test;
     $dumpvars;
 
     err = 0;
-
+    reset_n = 0;
+    #2
     go = 0;
     halt = 0;
-    rapids.mmu.memory[0] = 32'hDE010004;
-    rapids.mmu.memory[1] = 32'hDE020006;
-    rapids.mmu.memory[2] = 32'hD0801020;
-    rapids.D.registers[0] = 32'd16;
-    #10;
+    reset_n = 1;
+    #4;
+    reset_n = 0;
+    rapids.mmu.memory[0] = 32'h9EF10004;
+    rapids.mmu.memory[1] = 32'h9EF20006;
+    rapids.mmu.memory[2] = 32'h80801020;
+    #4;
     go = 1;
-    #10;
+    #20;
+
+    if(rapids.D.registers[1] != 10) begin
+      $display("BASIC RAPIDS TEST: basic arithemetic program test failed, expected 10 got %d",
+      rapids.D.registers[1]
+      );
+      err = 1;
+    end
 
 
     if (!err) begin

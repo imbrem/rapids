@@ -3,6 +3,7 @@ module basic_controlpath_test;
 
   reg clk;
   reg go;
+  reg reset_n;
   reg[31:0] instruction;
   reg instr_segv, data_segv;
   reg wait_data, wait_instr;
@@ -29,6 +30,7 @@ module basic_controlpath_test;
   controlpath C(
     .clk(clk),
     .go(go),
+    .reset_n(reset_n),
     .instruction(instruction),
     .instr_segv(instr_segv),
     .data_segv(data_segv),
@@ -71,16 +73,21 @@ module basic_controlpath_test;
     $dumpvars;
     err = 0;
 
+    reset_n = 0;
+    #2;
+    reset_n = 1;
+    #2;
     go = 0;
+    reset_n = 0;
     instruction = 32'h80801234;
     data_segv = 0;
     instr_segv = 0;
     wait_data = 0;
     wait_instr = 1;
-    #10
+    #4
     if(C.current_state != HALT) begin
       $display(
-        "CONTROLPATH TEST: initial condition test failed, got %",
+        "CONTROLPATH TEST: initial condition test failed, got %d",
         C.current_state
         );
       err = 1;
@@ -90,7 +97,7 @@ module basic_controlpath_test;
     #2
     if(C.current_state != READ_INS) begin
       $display(
-        "CONTROLPATH TEST: read instruction loop test failed, got %",
+        "CONTROLPATH TEST: read instruction loop test failed, got %d",
         C.current_state
         );
       err = 1;
@@ -105,7 +112,7 @@ module basic_controlpath_test;
       const_c != 0
       ) begin
       $display(
-        "CONTROLPATH TEST: initial condition test failed, got %",
+        "CONTROLPATH TEST: looping test failed, got %d",
         C.current_state
         );
       err = 1;

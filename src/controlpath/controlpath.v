@@ -38,6 +38,10 @@ module controlpath(
     WAIT_STORE = 5'b01100,
     DO = 5'b01001,
     TRAP = 5'b10000;
+  //00  STORE/LOAD
+  //01  SPECIAL
+  //10  ARITHMETIC
+  //11  JUMP
 
   //output of the modularized FSM
   wire[4:0] current_state;
@@ -50,20 +54,22 @@ module controlpath(
   wire[1:0] alu_write, sl_write;
   wire[3:0] logic_select, sl_select;
   wire instr_pc, instr_alu;
+  wire reg_instr_alu, reg_instr_pc;
   wire invalid_alu_instruction, invalid_mmu_instruction;
   //register naming for state dependant Op Mux
   reg[1:0] reg_write_raw;
   wire ld_raw, st_raw;
 
+  assign {reg_instr_alu, reg_instr_pc} = instr_reg[31:30];
   assign {instr_alu, instr_pc} = instruction[31:30];
 
   //Raw Operation Mux
   always @(*) begin
-    opcode = instr_alu ? alu_op : sl_op;
-    reg_write_raw = instr_alu ? alu_write : sl_write;
-    op_select = instr_alu ? logic_select : sl_select;
-    a_select = instr_alu ? alu_a : sl_a;
-    invalid_instruction = instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
+    opcode = reg_instr_alu ? alu_op : sl_op;
+    reg_write_raw = reg_instr_alu ? alu_write : sl_write;
+    op_select = reg_instr_alu ? logic_select : sl_select;
+    a_select = reg_instr_alu ? alu_a : sl_a;
+    invalid_instruction = reg_instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
   end
   //State dependant operation Mux
   always @(*) begin
