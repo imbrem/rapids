@@ -79,7 +79,6 @@ module rapids(clk, go, halt, reset_n);
     .alu_op(alu_op),
     .form(form),
     .vec(alu_vec_perci),
-    .alu_config(alu_config),
     .A(alu_a_select),
     .B(alu_b_select),
     .C(alu_c_select),

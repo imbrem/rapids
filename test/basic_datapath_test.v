@@ -3,6 +3,8 @@ module basic_datapath_test;
 
   reg clk;
   reg pc_inc;
+  reg jump;
+  reg reset_n;
   reg[2:0] op;
   reg form;
   reg[1:0] vec;
@@ -36,6 +38,9 @@ module basic_datapath_test;
 
   datapath datapath(
     .clk(clk),
+    .pc_inc(pc_inc),
+    .reset_n(reset_n),
+    .jump(jump),
     .alu_op(op),
     .form(form),
     .vec(vec),
@@ -47,7 +52,6 @@ module basic_datapath_test;
     .Y2(Y2),
     .write(write),
     .const_c(const_c),
-    .pc_inc(pc_inc),
     .constant(constant),
     .logic_select(logic_select),
     .mem_loca_addr(mem_loca_addr),
@@ -71,6 +75,8 @@ module basic_datapath_test;
     err = 0;
 
     pc_inc = 1;
+    reset_n = 0;
+    jump = 0;
     op = ADD;
     form = 0;
     vec = 0;

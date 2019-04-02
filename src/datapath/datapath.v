@@ -9,7 +9,6 @@ module datapath(
   input[2:0] alu_op,
   input form,
   input[1:0] vec,
-  input[3:0] alu_config,
   input[3:0] A,
   input[3:0] B,
   input[3:0] C,
