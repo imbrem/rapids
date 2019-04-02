@@ -23,7 +23,6 @@ module datapath(
   input[2:0] compare_op,
   //load and store
   input[3:0] mem_loca_addr,
-  input[3:0] reg_addr,
   input ld,
   input[31:0] ld_data,
   output[31:0] st_data,
@@ -44,7 +43,7 @@ module datapath(
   reg[31:0] registers[15:0];
   wire[31:0] register_view[15:0];
 
-  assign st_data = register_view[reg_addr];
+  assign st_data = register_view[A];
 
   //reset block
   genvar j;
@@ -59,7 +58,7 @@ module datapath(
   end
 
   genvar i;
-  assign register_view[0] = ~condition ? 32'b0 : registers[0];
+  assign register_view[0] = condition & ~pc_inc ? registers[0] : 32'b0;
   for(i = 1; i < 16; i = i + 1) begin : register_view_assignment
     assign register_view[i] = registers[i];
   end

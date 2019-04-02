@@ -54,16 +54,22 @@ module MMU(
   end
 
   always@(posedge clk) begin
-    if(data_segv) begin
-      data = 32'hXXXXXXXX;
-    end
-    else if(data_special) begin
+    if(data_special) begin
       if(wd) special[s_data_addr] = data_in;
-      if(rd) data = special[s_data_addr];
-      else data = 32'hXXXXXXXX;
     end
     else begin
       if(wd) memory[t_data_addr] = data_in;
+    end
+  end
+
+  always @(*) begin
+    if(data_segv)
+      data = 32'hXXXXXXXX;
+    else if(data_special) begin
+      if (rd) data = special[s_data_addr];
+      else data = 32'hXXXXXXXX;
+    end
+    else begin
       if(rd) data = memory[t_data_addr];
       else data = 32'hXXXXXXXX;
     end

@@ -54,7 +54,7 @@ module FSM_test;
     instr_pc = 0;
     ld = 0;
     st = 0;
-    wait_data = 1;
+    wait_data = 0;
     wait_instr = 0;
     data_segv = 0;
     instr_segv = 0;

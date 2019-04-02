@@ -25,10 +25,8 @@ module rapids(clk, go, halt, reset_n);
   wire[3:0] logic_select;
   wire condition;
   wire[2:0] compare_op;
-
   wire[3:0] mem_loca_addr;
   wire[31:0] mem_loca;
-  wire[3:0] reg_addr;
   wire ld, st;
   wire[31:0] ld_data;
   wire[31:0] st_data;
@@ -50,7 +48,7 @@ module rapids(clk, go, halt, reset_n);
     .wait_instr(wait_instr),
     .wait_data(wait_data),
     .opcode(alu_op),
-    .alu_form(alu_form),
+    .form(form),
     .alu_vec_perci(alu_vec_perci),
     .alu_config(alu_config),
     .const_c(const_c),
@@ -59,7 +57,7 @@ module rapids(clk, go, halt, reset_n);
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
     .alu_d_select(alu_d_select),
-    .alu_Y1_select(alu_Y1_select),
+    .Y1_select(alu_Y1_select),
     .alu_Y2_select(alu_Y2_select),
     .reg_write(alu_write),
     .op_select(logic_select),
@@ -67,8 +65,7 @@ module rapids(clk, go, halt, reset_n);
     .compare_op(compare_op),
     .st(st),
     .ld(ld),
-    .mem_loca_addr(mem_loca_addr),
-    .reg_addr(reg_addr)
+    .mem_loca_addr(mem_loca_addr)
     );
 
   datapath D(
@@ -76,7 +73,7 @@ module rapids(clk, go, halt, reset_n);
     .reset_n(reset_n),
     .pc_inc(pc_inc),
     .alu_op(alu_op),
-    .form(alu_form),
+    .form(form),
     .vec(alu_vec_perci),
     .alu_config(alu_config),
     .A(alu_a_select),
@@ -92,7 +89,6 @@ module rapids(clk, go, halt, reset_n);
     .condition(condition),
     .compare_op(compare_op),
     .mem_loca_addr(mem_loca_addr),
-    .reg_addr(reg_addr),
     .ld(ld),
     .ld_data(ld_data),
     .st_data(st_data),

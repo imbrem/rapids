@@ -10,25 +10,24 @@ module controlpath(
     input wait_data,
     output reg pc_inc,
     output reg[2:0] opcode,
-    output alu_form,
+    output reg form,
     output[1:0] alu_vec_perci,
     output[3:0] alu_config,
-    output const_c,
+    output reg const_c,
     output[31:0] constant,
     output reg[3:0] a_select,
     output[3:0] alu_b_select,
     output[3:0] alu_c_select,
     output[3:0] alu_d_select,
-    output[3:0] alu_Y1_select,
+    output reg[3:0] Y1_select,
     output[3:0] alu_Y2_select,
     output reg[1:0] reg_write,
     output reg[3:0] op_select,
-    output condition,
+    output reg condition,
     output[2:0] compare_op,
     output reg st,
     output reg ld,
-    output[3:0] mem_loca_addr,
-    output[3:0] reg_addr
+    output[3:0] mem_loca_addr
   );
 
   localparam
@@ -51,10 +50,14 @@ module controlpath(
   //wire naming for the Operation mux
   wire[2:0] alu_op, sl_op;
   wire[3:0] alu_a, sl_a;
+  wire[3:0] alu_Y1_select;
   wire[1:0] alu_write, sl_write;
   wire[3:0] logic_select, sl_select;
   wire instr_pc, instr_alu;
   wire reg_instr_alu, reg_instr_pc;
+  wire alu_form, sl_neg;
+  wire alu_const_c, sl_const_c;
+  wire alu_condition, sl_condition;
   wire invalid_alu_instruction, invalid_mmu_instruction;
   //register naming for state dependant Op Mux
   reg[1:0] reg_write_raw;
@@ -66,16 +69,23 @@ module controlpath(
   //Raw Operation Mux
   always @(*) begin
     opcode = reg_instr_alu ? alu_op : sl_op;
+    form = reg_instr_alu ? alu_form : sl_neg;
     reg_write_raw = reg_instr_alu ? alu_write : sl_write;
     op_select = reg_instr_alu ? logic_select : sl_select;
     a_select = reg_instr_alu ? alu_a : sl_a;
+    Y1_select = reg_instr_alu ? alu_Y1_select : sl_a;
+    const_c = reg_instr_alu ? alu_const_c : sl_const_c;
+    condition = (reg_instr_alu & reg_instr_pc) ? alu_condition : sl_condition;
     invalid_instruction = reg_instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
   end
   //State dependant operation Mux
   always @(*) begin
-    {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, ~instr_pc} : 3'b0;
-    ld = current_state == WAIT_LOAD ? ld_raw : 0;
-    st = current_state == WAIT_STORE ? st_raw : 0;
+    {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, ~reg_instr_pc} : 3'b0;
+    if (~reg_instr_pc & ~reg_instr_alu) begin
+      ld = (current_state == WAIT_LOAD | current_state == DO) ? ld_raw : 0;
+      st = (current_state == WAIT_STORE | current_state == DO) ? st_raw : 0;
+    end
+    else {ld, st} = 0;
   end
 
   //initial reset
@@ -92,12 +102,12 @@ module controlpath(
   end
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
-    .instruction(instr_reg),
+    .instruction(instruction),
     .invalid_instruction(invalid_alu_instruction),
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
     .alu_form(alu_form),
-    .const_c(const_c),
+    .const_c(alu_const_c),
     .constant(constant),
     .alu_a_select(alu_a),
     .alu_b_select(alu_b_select),
@@ -107,19 +117,22 @@ module controlpath(
     .alu_Y2_select(alu_Y2_select),
     .logic_select(logic_select),
     .alu_write(alu_write),
-    .condition(condition),
+    .condition(alu_condition),
     .compare_op(compare_op)
     );
 
   mmu_decoder d1(
-    .instruction(instr_reg[29:0]),
+    .instruction(instruction),
     .invalid_instruction(invalid_mmu_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
     .st(st_raw),
     .ld(ld_raw),
     .sl_select(sl_select),
+    .sl_neg(sl_neg),
     .sl_op(sl_op),
+    .sl_const_c(sl_const_c),
+    .sl_condition(sl_condition),
     .write(sl_write)
     );
 
