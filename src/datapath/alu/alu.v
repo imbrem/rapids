@@ -9,8 +9,7 @@
 //  <=FULL: Y1 = A - C, Y2 = B - D OR (Y1, Y2) = A - C - B
 //  DOUBLE: (Y1, Y2) = (A, B) - (C, D)
 
-module ALU(clk, op, form, vec, A, B, C, D, Y1, Y2, logic_select, compare_res, shift_add);
-  input clk;
+module ALU(op, form, vec, A, B, C, D, Y1, Y2, logic_select, compare_res, shift_add);
   input[2:0] op; // The base operation
   input form; // Whether to, if applicable, use the first or second form of an op
   input[1:0] vec; // How much precision to use: CHAR, HALF, FULL, DOUBLE

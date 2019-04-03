@@ -9,11 +9,13 @@ module mmu_decoder(
   output sl_neg,
   output[2:0] sl_op,
   output sl_const_c,
+  output [31:0]constant,
   output sl_condition,
   output reg[1:0] write
   );
-  assign {st, ld, reg_addr, mem_loca_addr, sl_select} = instruction[29:16];
-  assign {sl_op, sl_neg, sl_const_c, sl_condition} = 6'b111000;
+  assign {st, ld, reg_addr, mem_loca_addr, sl_select, sl_const_c} = instruction[29:15];
+  assign constant = {17'b0, instruction[14:0]};
+  assign {sl_op, sl_neg, sl_condition} = 6'b11100;
   always @(*) begin
     if(ld)
       write = 2'b01;

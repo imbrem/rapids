@@ -17,7 +17,7 @@ module controlpath(
     output[1:0] alu_vec_perci,
     output[3:0] alu_config,
     output reg const_c,
-    output[31:0] constant,
+    output reg[31:0] constant,
     output reg[3:0] a_select, //*
     output[3:0] alu_b_select,
     output[3:0] alu_c_select,
@@ -52,9 +52,10 @@ module controlpath(
   reg invalid_instruction;
   wire instr_pc, instr_alu;
   wire reg_instr_alu, reg_instr_pc;
+  wire st_flag, ld_flag;
   //General assignments
   assign {reg_instr_alu, reg_instr_pc} = instr_reg[31:30];
-  assign {instr_alu, instr_pc} = instruction[31:30];
+  assign {instr_alu, instr_pc, st_flag, ld_flag} = instruction[31:28];
   assign jump = reg_instr_pc & reg_instr_alu;
 
 
@@ -66,6 +67,7 @@ module controlpath(
   wire[3:0] logic_select, sl_select;
   wire alu_form, sl_neg;
   wire alu_const_c, sl_const_c;
+  wire [31:0]alu_constant, sl_constant;
   wire alu_condition, sl_condition;
   wire invalid_alu_instruction, invalid_mmu_instruction;
   //wire naming for state dependant Op Mux
@@ -81,6 +83,7 @@ module controlpath(
     a_select = reg_instr_alu ? alu_a : sl_a;
     Y1_select = reg_instr_alu ? alu_Y1_select : sl_a;
     const_c = reg_instr_alu ? alu_const_c : sl_const_c;
+    constant = reg_instr_alu ? alu_constant : sl_constant;
     condition = (reg_instr_alu & reg_instr_pc) ? alu_condition : sl_condition;
     invalid_instruction = reg_instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
   end
@@ -108,13 +111,13 @@ module controlpath(
   end
   //controlpath needs mux for different type of operations ie. PC
   alu_instruction_decoder d0(
-    .instruction(instruction),
+    .instruction(instr_reg),
     .invalid_instruction(invalid_alu_instruction),
     .alu_op(alu_op),
     .alu_vec_perci(alu_vec_perci),
     .alu_form(alu_form),
     .const_c(alu_const_c),
-    .constant(constant),
+    .constant(alu_constant),
     .alu_a_select(alu_a),
     .alu_b_select(alu_b_select),
     .alu_c_select(alu_c_select),
@@ -128,7 +131,7 @@ module controlpath(
     );
 
   mmu_decoder d1(
-    .instruction(instruction),
+    .instruction(instr_reg),
     .invalid_instruction(invalid_mmu_instruction),
     .reg_addr(sl_a),
     .mem_loca_addr(mem_loca_addr),
@@ -138,6 +141,7 @@ module controlpath(
     .sl_neg(sl_neg),
     .sl_op(sl_op),
     .sl_const_c(sl_const_c),
+    .constant(sl_constant),
     .sl_condition(sl_condition),
     .write(sl_write)
     );
@@ -149,8 +153,8 @@ module controlpath(
     .halt(halt),
     .instr_alu(instr_alu),
     .instr_pc(instr_pc),
-    .ld(ld_raw),
-    .st(st_raw),
+    .ld(ld_flag),
+    .st(st_flag),
     .wait_data(wait_data),
     .wait_instr(wait_instr),
     .data_segv(data_segv),

@@ -52,7 +52,7 @@ module datapath(
   end
 
 	endgenerate
-	
+
   assign program_counter = registers[0];
   assign v_A = register_view[A];
   assign v_B = register_view[B];
@@ -65,6 +65,7 @@ module datapath(
     else
       v_C = register_view[C];
   end
+
   assign mem_loca = register_view[mem_loca_addr];
 
   //condition
@@ -84,24 +85,28 @@ module datapath(
     .logic_select(logic_select), .compare_res(compare_res));
 
    generate
-	
-		for(i = 0; i < 16; i = i + 1) begin : register_setting
+
+		for(i = 1; i < 16; i = i + 1) begin : register_setting
 			always @(posedge clk) begin
 				if(reset_n) begin
-					if(i != 0) registers[i] <= 0;
-					else registers[i] <= `initial_addr;
+					registers[i] <= 0;
 				end
 				else begin
-					if(i == Y1) begin
-						if(w_Y1) registers[i] <= v_Y1;
-					end
-					if(i == Y2) begin
-						if(w_Y2) registers[i] <= v_Y2;
-					end
+  				if(i == Y1) begin
+  					if(w_Y1) registers[i] <= v_Y1;
+  				end
+  				if(i == Y2) begin
+  					if(w_Y2) registers[i] <= v_Y2;
+  				end
 				end
 			end
 		end
 	endgenerate
-  
+
+  always@(posedge clk) begin
+    if(reset_n) registers[0] <= `initial_addr;
+    else if(jump & w_Y1) registers[0] <= v_Y1;
+    else registers[0] = registers[0] + pc_inc;
+  end
 
 endmodule

@@ -4,7 +4,7 @@ module adder (form, vec, A, B, C, D, Y1, Y2);
   input[1:0] vec;
   input[31:0] A, B, C, D;
   output [31:0] Y1, Y2;
-  
+
   reg [31:0]Y1_preci[3:0];
   reg [31:0]Y2_preci[3:0];
 
@@ -28,11 +28,11 @@ module adder (form, vec, A, B, C, D, Y1, Y2);
     end
   end
   endgenerate
-  
+
   always@(*) begin
-    {Y1_preci[2'b11], Y2_preci[2'b11]} = {A, B} + {C, D};
+    {Y1_preci[3], Y2_preci[3]} = {A, B} + {C, D};
   end
-  
+
   assign {Y1, Y2} = {Y1_preci[vec], Y2_preci[vec]};
 
 endmodule

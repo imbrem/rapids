@@ -1,3 +1,4 @@
+IFLAGS = -Wall
 ALU_FILES = src/datapath/alu/alu.v \
 	src/datapath/alu/alu_modules/adder.v \
 	src/datapath/alu/alu_modules/subtractor.v \
@@ -60,42 +61,42 @@ build/FSM_test.vcd: build/FSM_test
 
 build/meta_test: test/meta_test.v
 	mkdir -p build
-	iverilog -o build/meta_test test/meta_test.v
+	iverilog $(IFLAGS) -o build/meta_test test/meta_test.v
 
 build/alu_test: test/alu_test.v $(ALU_FILES)
 	mkdir -p build
-	iverilog -o build/alu_test test/alu_test.v $(ALU_FILES)
+	iverilog $(IFLAGS) -o build/alu_test test/alu_test.v $(ALU_FILES)
 
 build/basic_datapath_test: test/basic_datapath_test.v $(DATAPATH_FILES)
 	mkdir -p build
-	iverilog -o build/basic_datapath_test \
+	iverilog $(IFLAGS) -o build/basic_datapath_test \
 		test/basic_datapath_test.v $(DATAPATH_FILES)
 
 build/alu_instruction_decoder_test: test/alu_instruction_decoder_test.v $(DECODER_FILES)
 	mkdir -p build
-	iverilog -o build/alu_instruction_decoder_test \
+	iverilog $(IFLAGS) -o build/alu_instruction_decoder_test \
 		test/alu_instruction_decoder_test.v $(DECODER_FILES)
 
 build/basic_controlpath_test: test/basic_controlpath_test.v $(CONTROLPATH_FILES)
 	mkdir -p build
-	iverilog -o build/basic_controlpath_test \
+	iverilog $(IFLAGS) -o build/basic_controlpath_test \
 		test/basic_controlpath_test.v $(CONTROLPATH_FILES)
 
 build/basic_rapids_test: test/basic_rapids_test.v $(ALL_FILES)
 	mkdir -p build
-	iverilog -o build/basic_rapids_test test/basic_rapids_test.v $(ALL_FILES)
+	iverilog $(IFLAGS) -o build/basic_rapids_test test/basic_rapids_test.v $(ALL_FILES)
 
 build/mmu_test: test/mmu_test.v $(MMU_FILES)
 	mkdir -p build
-	iverilog -o build/mmu_test test/mmu_test.v $(MMU_FILES)
+	iverilog $(IFLAGS) -o build/mmu_test test/mmu_test.v $(MMU_FILES)
 
 build/logic_unit_test: test/logic_unit_test.v $(ALU_FILES)
 	mkdir -p build
-	iverilog -o build/logic_unit_test test/logic_unit_test.v $(ALU_FILES)
+	iverilog $(IFLAGS) -o build/logic_unit_test test/logic_unit_test.v $(ALU_FILES)
 
 build/FSM_test: test/FSM_test.v $(CONTROLPATH_FILES)
 	mkdir -p build
-	iverilog -o build/FSM_test test/FSM_test.v $(CONTROLPATH_FILES)
+	iverilog $(IFLAGS) -o build/FSM_test test/FSM_test.v $(CONTROLPATH_FILES)
 
 clean:
 	rm -f build/*

@@ -43,6 +43,9 @@ module FSM(
             else
               next_state = HALT;
           end
+          else if(~instr_alu & instr_pc) begin
+            next_state = HALT;
+          end
           else
             next_state = DO;
         end

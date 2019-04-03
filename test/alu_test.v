@@ -6,8 +6,10 @@ module alu_test;
   reg form;
   reg[1:0] vec;
   reg[31:0] A, B, C, D;
+  reg shift_add;
   wire[31:0] Y1, Y2;
   reg[3:0] logic_select;
+  wire [7:0]compare_res;
 
   localparam
     ADD = 3'b000,
@@ -21,11 +23,13 @@ module alu_test;
 
   ALU alu (
     .op(op),
+    .shift_add(shift_add),
     .form(form),
     .vec(vec),
     .A(A), .B(B), .C(C), .D(D),
     .Y1(Y1), .Y2(Y2),
-    .logic_select(logic_select)
+    .logic_select(logic_select),
+    .compare_res(compare_res)
   );
 
   initial begin
