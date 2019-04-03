@@ -61,26 +61,35 @@ module MMU(
   assign wait_instr = 1'b0;
 
   //reset entire memory
+  generate
+  
   genvar i;
   for(i = 0; i < 128; i = i + 1) begin : reset_memory
     initial begin
       memory[i] = 32'b0;
     end
-  end
-  genvar j;
-  for(j = 1; j < 15; j = j + 1) begin : reset_special_memory
-    always @(posedge reset_n) begin
-      special[j] = 32'b0;
-    end
-  end
-
+  end  
+	endgenerate
+	
+	generate 
+	for(i = 0; i < 15; i = i + 1) begin : reset_special_mem
+		always @(posedge clk) begin
+			if(reset_n) special[i] <= 0;
+			else begin
+				if(data_special) begin
+					if(i == s_data_addr) begin
+						if(wd) special[i] <= data_in;
+					end
+				end 
+			end
+		end
+	end	
+	endgenerate
+	
   always@(posedge clk) begin
-    if(data_special) begin
-      if(wd) special[s_data_addr] = data_in;
-    end
-    else begin
+	if(~data_special) begin
       if(wd) memory[t_data_addr] = data_in;
-    end
+	 end
   end
 
   always @(*) begin

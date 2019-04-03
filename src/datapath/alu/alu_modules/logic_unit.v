@@ -16,6 +16,8 @@ module logic_unit(
     XOR = 3'b110,
     COPY = 3'b111;
 
+  generate
+	 
   genvar i;
   for(i = 0; i < 4; i = i + 1) begin: partition_loop
     localparam  rb = 8*i, lb = 8*i+7;
@@ -47,5 +49,7 @@ module logic_unit(
       end
     end
   end
+  
+  endgenerate
 
 endmodule

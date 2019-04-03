@@ -32,7 +32,6 @@ module datapath(
 );
 
   wire[31:0] v_Y1, v_Y2;
-  wire[31:0] constant;
   wire[31:0] v_A;
   wire[31:0] v_B;
   reg[31:0] v_C;
@@ -45,24 +44,15 @@ module datapath(
 
   assign st_data = register_view[A];
 
-  //reset block
-  genvar j;
-  for(j = 1; j < 16; j = j + 1) begin : register_reset
-    always @(posedge reset_n) begin
-      registers[j] = 0;
-    end
-  end
-  //for test purpose only, modify after
-  always @(posedge reset_n) begin
-    registers[0] = `initial_addr;
-  end
-
+	generate
   genvar i;
   assign register_view[0] = jump ? registers[0] : 32'b0;
   for(i = 1; i < 16; i = i + 1) begin : register_view_assignment
     assign register_view[i] = registers[i];
   end
 
+	endgenerate
+	
   assign program_counter = registers[0];
   assign v_A = register_view[A];
   assign v_B = register_view[B];
@@ -93,15 +83,25 @@ module datapath(
     .A(v_A), .B(v_B), .C(v_C), .D(v_D), .Y1(v_Y1), .Y2(v_Y2),
     .logic_select(logic_select), .compare_res(compare_res));
 
-  always @(posedge clk) begin
-    if(w_Y1) begin
-      registers[Y1] <= v_Y1;
-    end
-    if(w_Y2) begin
-      registers[Y2] <= v_Y2;
-    end
-    if(pc_inc) begin
-      registers[0] += 1;
-    end
-  end
+   generate
+	
+		for(i = 0; i < 16; i = i + 1) begin : register_setting
+			always @(posedge clk) begin
+				if(reset_n) begin
+					if(i != 0) registers[i] <= 0;
+					else registers[i] <= `initial_addr;
+				end
+				else begin
+					if(i == Y1) begin
+						if(w_Y1) registers[i] <= v_Y1;
+					end
+					if(i == Y2) begin
+						if(w_Y2) registers[i] <= v_Y2;
+					end
+				end
+			end
+		end
+	endgenerate
+  
+
 endmodule

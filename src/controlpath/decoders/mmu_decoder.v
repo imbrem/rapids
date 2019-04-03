@@ -17,7 +17,7 @@ module mmu_decoder(
   always @(*) begin
     if(ld)
       write = 2'b01;
-    else if(st)
+    else
       write = 2'b00;
   end
 

@@ -3,8 +3,12 @@ module adder (form, vec, A, B, C, D, Y1, Y2);
   input form;
   input[1:0] vec;
   input[31:0] A, B, C, D;
-  output reg[31:0] Y1, Y2;
+  output [31:0] Y1, Y2;
+  
+  reg [31:0]Y1_preci[3:0];
+  reg [31:0]Y2_preci[3:0];
 
+  generate
   genvar preci;
   for(preci = 0; preci < 3; preci = preci + 1) begin : precgen_add
     genvar biti;
@@ -12,28 +16,23 @@ module adder (form, vec, A, B, C, D, Y1, Y2);
     for(biti = 0; biti < 32/nobits; biti = biti + 1) begin : bitgen_add
       localparam integer lb = (biti + 1)*nobits - 1;
       localparam integer rb = biti*nobits;
-      always @(*) begin
-        if(vec == preci) begin
-
-          if(!form) begin
-            Y1[lb:rb] = A[lb:rb] + C[lb:rb];
-            Y2[lb:rb] = B[lb:rb] + D[lb:rb];
-          end
+		  always @(*) begin
+		    if(!form) begin
+            Y1_preci[preci][lb:rb] = A[lb:rb] + C[lb:rb];
+            Y2_preci[preci][lb:rb] = B[lb:rb] + D[lb:rb];
+			 end
           else begin
-            {Y1[lb:rb], Y2[lb:rb]} = A[lb:rb] + B[lb:rb] + C[lb:rb];
+            {Y1_preci[preci][lb:rb], Y2_preci[preci][lb:rb]} = A[lb:rb] + B[lb:rb] + C[lb:rb];
           end
-
-        end
-
-      end
+		  end
     end
   end
-
-  always @(*) begin
-    if(vec == 2'b11) begin
-      {Y1, Y2} = {A, B} + {C, D};
-    end
+  endgenerate
+  
+  always@(*) begin
+    {Y1_preci[2'b11], Y2_preci[2'b11]} = {A, B} + {C, D};
   end
-
+  
+  assign {Y1, Y2} = {Y1_preci[vec], Y2_preci[vec]};
 
 endmodule
