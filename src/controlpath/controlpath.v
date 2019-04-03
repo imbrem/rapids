@@ -53,11 +53,14 @@ module controlpath(
   wire instr_pc, instr_alu;
   wire reg_instr_alu, reg_instr_pc;
   wire st_flag, ld_flag;
+  wire halt_flag;
+  wire zero_instr;
   //General assignments
   assign {reg_instr_alu, reg_instr_pc} = instr_reg[31:30];
   assign {instr_alu, instr_pc, st_flag, ld_flag} = instruction[31:28];
   assign jump = reg_instr_pc & reg_instr_alu;
-
+  assign halt_flag = halt | (~reg_instr_alu & reg_instr_pc);
+  assign zero_instr = instruction == 0;
 
   //wire naming for the Operation mux
   wire[2:0] alu_op, sl_op;
@@ -85,11 +88,14 @@ module controlpath(
     const_c = reg_instr_alu ? alu_const_c : sl_const_c;
     constant = reg_instr_alu ? alu_constant : sl_constant;
     condition = (reg_instr_alu & reg_instr_pc) ? alu_condition : sl_condition;
-    invalid_instruction = reg_instr_alu ? invalid_alu_instruction : invalid_mmu_instruction;
+    invalid_instruction = zero_instr ?
+      0 : (reg_instr_alu ? invalid_alu_instruction : invalid_mmu_instruction);
   end
   //State dependant operation Mux
   always @(*) begin
-    {reg_write, pc_inc} = (current_state == DO & ~invalid_instruction) ? {reg_write_raw, ~reg_instr_pc} : 3'b0;
+    {reg_write, pc_inc} =
+      (current_state == DO & ~invalid_instruction & ~zero_instr) ?
+      {reg_write_raw, ~reg_instr_pc} : 3'b0;
     if (~reg_instr_pc & ~reg_instr_alu) begin
       ld = (current_state == WAIT_LOAD | current_state == DO) ? ld_raw : 0;
       st = (current_state == WAIT_STORE | current_state == DO) ? st_raw : 0;
@@ -150,7 +156,7 @@ module controlpath(
     .clk(clk),
     .reset_n(reset_n),
     .go(go),
-    .halt(halt),
+    .halt(halt_flag),
     .instr_alu(instr_alu),
     .instr_pc(instr_pc),
     .ld(ld_flag),
